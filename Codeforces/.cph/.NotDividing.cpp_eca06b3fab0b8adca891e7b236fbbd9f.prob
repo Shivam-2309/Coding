@@ -1,0 +1,1 @@
+{"name":"Local: NotDividing","url":"c:\\Users\\Shivam\\OneDrive\\Desktop\\CSES\\Codeforces\\NotDividing.cpp","tests":[{"id":1710791390438,"input":"3\n4\n2 4 3 6\n3\n1 2 3\n2\n4 2\n","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\Shivam\\OneDrive\\Desktop\\CSES\\Codeforces\\NotDividing.cpp","group":"local","local":true}

@@ -1,0 +1,1 @@
+{"name":"Local: BinaryPath","url":"c:\\Users\\Shivam\\OneDrive\\Desktop\\CSES\\BinaryPath.cpp","tests":[{"id":1709221019058,"input":"3\n2\n00\n00\n4\n1101\n1100\n8\n00100111\n11101101\n","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\Shivam\\OneDrive\\Desktop\\CSES\\BinaryPath.cpp","group":"local","local":true}

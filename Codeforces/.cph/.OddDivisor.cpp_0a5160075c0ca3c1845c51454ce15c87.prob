@@ -1,0 +1,1 @@
+{"name":"Local: OddDivisor","url":"c:\\Users\\Shivam\\OneDrive\\Desktop\\CSES\\Codeforces\\OddDivisor.cpp","tests":[{"id":1709584991209,"input":"6\n2\n3\n4\n5\n998244353\n1099511627776\n","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\Shivam\\OneDrive\\Desktop\\CSES\\Codeforces\\OddDivisor.cpp","group":"local","local":true}
