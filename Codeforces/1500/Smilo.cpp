@@ -47,39 +47,98 @@ ll lcm(ll a, ll b)
     return a * b / __gcd(a, b);
 }
 // ll dp[100001];
+
+bool isValid(vector<ll> v, ll T){
+    ll t = T;
+    ll x = 0;
+
+    ll i = 0;
+    ll j = v.size()-1;
+
+    while(t > 0){
+        if(i == j){
+            double need = (v[i] - x);
+            if(v[i] == 1){
+                if(t == 1){
+                    j--;
+                    break;
+                }
+            }
+            t -= (ceil(need/2) + 1);
+            if(t >= 0){
+                j--;
+                break;
+            }
+            else{
+                break;
+            }
+        }
+
+        bool f = false;
+
+        if(i < v.size() && v[i] >= (v[j]-x)){
+            ll tt = v[j] - x;
+            v[i] -= tt;
+            x = v[j];
+            t -= tt;
+            if(v[i] == 0) i++;
+        }
+        else if(i < v.size() && v[i] <= t){
+            t -= v[i];
+            x += v[i];
+            i++;
+            f = true;
+        }
+        
+        if(i <= j && j >= 0 && t > 0 && v[j] <= x){
+            t--;
+            x = 0;
+            v[j] = 0;
+            j--;
+            f = true;
+        }
+
+        if(!f){
+            break;
+        }
+        if(i > j){
+            break;
+        }
+    }
+    
+    return j < i;
+}
+
 void solve(){
+
     ll n; cin >> n;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    vll v(n);
+    rep(i, n) cin >> v[i];
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
-    }
+    ll lo = 1;
+    ll sum = 0;
 
-    // print(v);
+    srt(v);
 
-    ll c = 0;
+    for(ll i=0; i<n; i++) sum += v[i];
 
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
+    ll hi = sum;
+    ll ans = -1;
+
+    while(lo <= hi){
+        ll mid = (lo + hi)/2;
+
+        if(isValid(v, mid)){
+            ans = mid;
+            hi = mid - 1;
         }
         else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
+            lo = mid + 1;
         }
     }
 
-    cout << c << endl;
+    cout << ans << endl;
 }
 // Read the question again
 int main(){

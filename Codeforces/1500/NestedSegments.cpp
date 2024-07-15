@@ -47,39 +47,81 @@ ll lcm(ll a, ll b)
     return a * b / __gcd(a, b);
 }
 // ll dp[100001];
+
+bool cmp(const pair<pair<ll, ll>, ll> &a, const pair<pair<ll, ll>, ll> &b) {
+    if (a.first.first != b.first.first) {
+        return a.first.first < b.first.first;
+    } else {
+        return a.first.second > b.first.second;
+    }
+}
+
 void solve(){
     ll n; cin >> n;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    vector<pair<pair<ll, ll>, ll>> v;
+    vector<pair<ll, ll>> t;
 
-    vll v;
     for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+        ll l, r;
+        cin >> l >> r;
+
+        t.push_back({l, r});
+        v.push_back({{l, r}, i});
     }
 
-    // print(v);
+    sort(v.begin(), v.end(), cmp);
 
-    ll c = 0;
+    map<ll, ll> mp;
 
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
+    for(ll i=0; i<n; i++){
+        mp[v[i].first.second]++;
+    }
+
+    bool f = false;
+
+    ll idx = -1;
+
+    ll start2 = -1;
+    ll end2 = -1;
+
+    for (ll i = 0; i < n; ++i) {
+        ll s = v[i].first.first;
+        ll e = v[i].first.second;
+
+        // debug(s);
+        // debug(e);
+
+        mp[e]--;
+
+        if (mp[e] == 0) {
+            mp.erase(e);
         }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
+
+        auto it = mp.begin();
+        if (it != mp.end() && it->first <= e) {
+            // cout << "CHECK" << endl;
+            idx = v[i].second;
+            end2 = it -> first;
+            f = true;
+            break;
         }
     }
 
-    cout << c << endl;
+    // debug(end2);
+
+    if(!f){
+        cout << -1 << " " << -1 << endl;
+        return;
+    }
+
+    for(ll i=0; i<n; i++){
+        if(i != idx && t[i].second == end2 && t[i].first >= t[idx].first){
+            cout << i+1 << " " << idx+1 << endl;
+            return;
+        }
+    }
+
 }
 // Read the question again
 int main(){
@@ -90,7 +132,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

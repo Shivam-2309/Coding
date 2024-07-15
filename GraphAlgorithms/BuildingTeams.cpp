@@ -1,11 +1,6 @@
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
 typedef long long ll;
 using namespace std;
-using namespace __gnu_pbds;
-typedef tree<pair<ll, ll>, null_type, less<pair<ll, ll>>, rb_tree_tag, tree_order_statistics_node_update> indexed_set;
-typedef tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset;
 #pragma GCC optimize("O3")
 #pragma GCC target("avx2,bmi,bmi2,popcnt,lzcnt")
 #ifndef ONLINE_JUDGE
@@ -23,11 +18,9 @@ typedef tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_n
 #endif
 #define ll long long
 #define vll vector<ll>
-#define vp vector<pair<long long, long long>>
 #define rev(v) reverse(v.begin(), v.end())
 #define srt(v) sort(v.begin(), v.end());
 #define rep(i, n) for (ll i = 0; i < n; i++)
-#define all(v) v.begin(), v.end()
 const ll mod7 = 1e9 + 7;
 const ll mod9 = 998244353;
 ll power(ll a, ll b)
@@ -47,50 +40,70 @@ ll lcm(ll a, ll b)
     return a * b / __gcd(a, b);
 }
 // ll dp[100001];
-void solve(){
-    ll n; cin >> n;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+void dfs(ll node, vector<ll> adj[], vector<ll> &vis, ll col, vector<ll> &team, bool &f){
+    vis[node] = 1;
+    team[node] = col;
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
-    }
-
-    // print(v);
-
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
+    for(auto &child : adj[node]){
+        if(vis[child] && team[child] == col){
+            f = true;
+            return;
         }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
+        if(!vis[child]){
+            dfs(child, adj, vis, !col, team, f);
         }
     }
-
-    cout << c << endl;
 }
-// Read the question again
+
+void solve(){
+    ll n, m; cin >> n >> m;
+    vector<vector<ll>> edges;
+
+    for(ll i=0; i<m; i++){
+        ll u, v; cin >> u >> v;
+        edges.push_back({u, v});
+    }
+
+    vector<ll> adj[n+1];
+
+    for(auto edge : edges){
+        ll u = edge[0];
+        ll v = edge[1];
+
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    // now make a bipartite graph simply
+
+    ll col = 0;
+    vector<ll> team(n+1, -1);
+    vector<ll> vis(n+1, 0);
+
+    for(ll i=1; i<=n; i++){
+        ll col = 0;
+        bool f = false;
+        if(!vis[i]) dfs(i, adj, vis, col, team, f);
+        if(f){
+            cout << "IMPOSSIBLE" << endl;
+            return;
+        }
+    }
+
+    for(ll i=1; i<=n; i++){
+        if(team[i] == 1) cout << team[i] << " ";
+        else cout << 2 << " ";
+    }
+    cout << endl;
+}
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // sieveOfEratosthenes()
-    // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

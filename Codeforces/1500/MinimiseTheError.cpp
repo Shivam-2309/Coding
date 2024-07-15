@@ -46,40 +46,62 @@ ll lcm(ll a, ll b)
 {
     return a * b / __gcd(a, b);
 }
-// ll dp[100001];
-void solve(){
-    ll n; cin >> n;
+
+struct Compare {
+    bool operator() (const pair<ll, ll>& a, const pair<ll, ll>& b) const {
+        if (a.first != b.first)
+            return a.first < b.first;
+        return a.second < b.second;
+    }
+};
+
+void solve() {
+    ll n, k1, k2;
+    cin >> n >> k1 >> k2;
 
     vll a(n);
     rep(i, n) cin >> a[i];
 
+    vll b(n);
+    rep(i, n) cin >> b[i];
+
     vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+    for (ll i = 0; i < n; i++) {
+        v.push_back(abs(a[i] - b[i]));
     }
 
-    // print(v);
+    set<pair<ll, ll>, Compare> st;
+    for (ll i = 0; i < n; i++) {
+        st.insert({v[i], i});
+    }
+    ll i = 0;
+    for (; i < (k1 + k2); i++) {
+        auto it = prev(st.end());
+        pair<ll, ll> val = *it;
+        st.erase(it);
 
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
-        }
+        if(val.first != 0) val.first = val.first - 1;
+        else break;
+        st.insert(val);
     }
 
-    cout << c << endl;
+    ll left = (k1 + k2 - i);
+
+    if(left != 0 && left % 2 == 0){
+        cout << 0 << endl;
+        return;
+    }
+    else if(left != 0){
+        cout << 1 << endl;
+        return;
+    }
+
+    ll ans = 0;
+    for (auto i : st) {
+        ans += (i.first * i.first);
+    }
+
+    cout << ans << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +112,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

@@ -1,18 +1,31 @@
-#include "bits/stdc++.h"
+#include <bits/stdc++.h>
+typedef long long ll;
 using namespace std;
-#define int long long
-#define endl "\n"
-#define INF 1e18
-#define all(x) (x).begin(), (x).end()
-#define srt(v) sort(v.begin(), v.end())
-#define rep(i, n) for (long long i = 0; i < n; i++)
-
-const int mod7 = 1e9 + 7;
-const int mod9 = 998244353;
-
-int power(int a, int b)
+#pragma GCC optimize("O3")
+#pragma GCC target("avx2,bmi,bmi2,popcnt,lzcnt")
+#ifndef ONLINE_JUDGE
+#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
+#define print(v) do { \
+                    cout << "vect--" << #v << " = [ "; \
+                    for (int i = 0; i < v.size(); i++) { \
+                        cout << v[i] << " "; \
+                    } \
+                    cout << "]" << endl; \
+                } while(0)
+#else
+#define debug(x)
+#define print(v)
+#endif
+#define ll long long
+#define vll vector<ll>
+#define rev(v) reverse(v.begin(), v.end())
+#define srt(v) sort(v.begin(), v.end());
+#define rep(i, n) for (ll i = 0; i < n; i++)
+const ll mod7 = 1e9 + 7;
+const ll mod9 = 998244353;
+ll power(ll a, ll b)
 {
-    int res = 1;
+    ll res = 1;
     while (b > 0)
     {
         if (b & 1)
@@ -22,73 +35,131 @@ int power(int a, int b)
     }
     return res;
 }
-
-void dfs(int row_start, int col_start, int row_end, int col_end, vector<vector<int>> &vis, vector<vector<int>> &mat, string &s, string &ans){
-    if(row_start == row_end && col_start == col_end){
-        ans = s;
-        return;
-    }
-
-    int delRow[] = {1, 0, -1, 0};
-    int delCol[] = {0, -1, 0, 1};
-
-    for(int i=0; i<4; i++){
-        int newRow = 
-    }
+ll lcm(ll a, ll b)
+{
+    return a * b / __gcd(a, b);
 }
- 
+// ll dp[100001];
+
+bool isValid(ll r, ll c, ll rows, ll cols){
+    if(r >= 0 && r < rows && c >= 0 && c < cols){
+        return true;
+    }
+    return false;
+}
+
 void solve(){
-    int rows, cols;
-    cin >> rows >> cols;
+    ll n, m; cin >> n >> m;
 
-    vector<vector<int> mat(rows, vector<int> (cols));
+    vector<vector<char>> grid(n+1, vector<char> (m+1, '*'));
 
-    for(int i=0; i<rows; i++){
-        for(int j=0; j<cols; j++){
-            cin >> mat[i][j];
+    for(ll i=0; i<n; i++){
+        for(ll j=0; j<m; j++){
+            char ch; cin >> ch;
+            grid[i][j] = ch;
         }
     }
 
-    vector<vector<int>> vis(rows, vector<int> (cols, 0));
+    ll vis[n][m];
 
-    int row_start = -1;
-    int col_start = -1;
-    int row_end = -1;
-    int col _end = -1;
-
-    for(int i=0; i<rows; i++){
-        for(int j=0; j<cols; j++){
-            if(mat[i][j] == 'A'){
-                row_start = i;
-                col_start = j;
-            }
-            if(mat[i][j] == 'B'){
-                row_end = i;
-                col_end = j;
-            }
+    for(ll i=0; i<n; i++){
+        for(ll j=0; j<m; j++){
+            vis[i][j] = 0;
         }
     }
-    string s = "";
-    string ans = "";
-    dfs(row_start, col_start, row_end, col_end, vis, mat, s, ans);
-    if(s.length() == 0){
-        cout << "NO" << endl;
+
+    char path[n][m];
+
+    for(ll i=0; i<n; i++){
+        for(ll j=0; j<m; j++){
+            path[i][j] = '*';
+        }
     }
-    else{
-        cout << "YES" << endl;
-        cout << ans.length() << endl;
-        cout << ans << endl;
+
+    ll startRow = -1;
+    ll startCol = -1;
+
+    for(ll i=0; i<n; i++){
+        for(ll j=0; j<m; j++){
+            if(grid[i][j] == 'A'){
+                startRow = i;
+                startCol = j;
+                break;
+            }
+        }
+        if((startRow != -1) && (startCol != -1)) break;
     }
+
+    ll delRow[] = {1, 0, -1, 0};
+    ll delCol[] = {0, 1, 0, -1};
+
+    queue<pair<ll, ll>> q;
+    q.push({startRow, startCol});
+
+    while(!q.empty()){
+        auto cell = q.front();
+        q.pop();
+
+        ll row = cell.first;
+        ll col = cell.second;
+
+        for(ll i=0; i<4; i++){
+            ll newRow = row + delRow[i];
+            ll newCol = col + delCol[i];
+
+            if(isValid(newRow, newCol, n, m) && grid[newRow][newCol] == 'B'){
+                // found
+                if(i == 0) path[newRow][newCol] = 'D';
+                if(i == 1) path[newRow][newCol] = 'R';
+                if(i == 2) path[newRow][newCol] = 'U';
+                if(i == 3) path[newRow][newCol] = 'L';
+
+                string res = "";
+                ll s = newRow;
+                ll e = newCol;
+
+                while(grid[s][e] != 'A'){
+                    // cout << "CHECK" << endl;
+                    // cout << path[s][e] << endl;
+                    res.push_back(path[s][e]);
+                    if(path[s][e] == 'U') s++;
+                    else if(path[s][e] == 'D') s--;
+                    else if(path[s][e] == 'L') e++;
+                    else if(path[s][e] == 'R') e--;
+                }
+                
+                rev(res);
+
+                cout << "YES" << endl;
+                cout << res.length() << endl;
+                cout << res << endl;
+                return;
+            }
+
+            if(isValid(newRow, newCol, n, m) && !vis[newRow][newCol] && grid[newRow][newCol] == '.'){
+                if(i == 0) path[newRow][newCol] = 'D';
+                if(i == 1) path[newRow][newCol] = 'R';
+                if(i == 2) path[newRow][newCol] = 'U';
+                if(i == 3) path[newRow][newCol] = 'L';
+                vis[newRow][newCol] = 1;
+                q.push({newRow, newCol});
+            } 
+        }
+    }
+
+    cout << "NO" << endl;
 }
- 
-signed main(){
-    ios_base::sync_with_stdio(false);
-    cin.tie(NULL);
-    int tc;
-    // cin >> tc;
-    tc = 1;
-    while(tc--){
+int main(){
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    cout.tie(0);
+    // cout.precision(15);
+    ll t = 1;
+    // cin >> t;
+    while (t--)
+    {
         solve();
     }
-   return 0;
+    return 0;
 }
+/*     The code finishes, I hope it gets Accepted      */

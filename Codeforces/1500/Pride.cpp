@@ -49,37 +49,43 @@ ll lcm(ll a, ll b)
 // ll dp[100001];
 void solve(){
     ll n; cin >> n;
+    vll v(n);
+    rep(i, n) cin >> v[i];
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
-
-    vll v;
+    ll numOnes = 0;
     for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+        if(v[i] == 1){
+            numOnes++;
+        }
     }
 
-    // print(v);
+    if(numOnes != 0){
+        cout << n - numOnes << endl;
+        return;
+    }
 
-    ll c = 0;
+    ll minDist = 1e9;
 
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
+    for(ll i=0; i<n; i++){
+        ll t = v[i];
+        for(ll j=i+1; j<n; j++){
+            t = __gcd(t, v[j]);
+
+            if(t == 1){
+                minDist = min(minDist, j - i + 1);
+                break;
             }
-            c = abs(c);
-            i = j;
         }
     }
 
-    cout << c << endl;
+    if(minDist == 1e9){
+        cout << -1 << endl;
+        return;
+    }
+
+    minDist--;
+
+    cout << n - 1 + minDist << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +96,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

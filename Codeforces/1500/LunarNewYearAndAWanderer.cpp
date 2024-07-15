@@ -47,39 +47,62 @@ ll lcm(ll a, ll b)
     return a * b / __gcd(a, b);
 }
 // ll dp[100001];
+
+// void dfs(ll node, vector<ll> adj[], vector<ll> &vis, vector<ll> &res, multiset<ll> &mt) {
+//     vis[node] = 1;
+//     res.push_back(node);
+//     mt.erase(mt.find(node));
+
+//     // cout << "Visiting node: " << node << endl;
+
+//     for (auto child : adj[node]) {
+//         if (!vis[child]) {
+//             mt.insert(child);
+//         }
+//     }
+
+//     if (!mt.empty()) {
+//         ll next = *mt.begin();
+//         dfs(next, adj, vis, res, mt);
+//     }
+// }
+
 void solve(){
-    ll n; cin >> n;
+    ll n, m; cin >> n >> m;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    vector<ll> adj[n+1];
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+    for(ll i=0; i<m; i++){
+        ll u, v;
+        cin >> u >> v;
+
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
 
-    // print(v);
+    vector<ll> vis(n+1, 0);
+    multiset<ll> mt;
+    mt.insert(1);
+    vector<ll> res;
+    vis[1] = 1;
 
-    ll c = 0;
+    while(res.size() != n){
+        ll s = *mt.begin();
+        mt.erase(s);
 
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
+        for(auto it: adj[s]){
+            if(mt.find(it) == mt.end() && vis[it] == 0){
+                mt.insert(it);
+                vis[it] = 1;
             }
-            c = abs(c);
-            i = j;
         }
+
+        res.push_back(s);
     }
 
-    cout << c << endl;
+    for(auto i: res){
+        cout << i << " ";
+    }cout << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +113,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

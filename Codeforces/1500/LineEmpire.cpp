@@ -48,38 +48,30 @@ ll lcm(ll a, ll b)
 }
 // ll dp[100001];
 void solve(){
-    ll n; cin >> n;
+    ll n, a, b;
+    cin >> n >> a >> b;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    vll v(n);
+    rep(i, n) cin >> v[i];
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
-    }
-
-    // print(v);
-
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
+    if(b >= a){
+        ll sum = 0;
+        for(ll i=0; i<n; i++){
+            sum += (b * v[i]);
         }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
-        }
+        cout << sum << endl;
     }
+    else{
+        ll sum = 0;
+        for(ll i=0; i<(n-1); i++){
+            sum += (b * (v[i] - (i >= 1 ? v[i-1] : 0)));
+            sum += (a * (v[i] - (i >= 1 ? v[i-1] : 0)));
 
-    cout << c << endl;
+            debug(sum);
+        }
+        sum += (v[n-1] - (n >= 2 ? v[n-2] : 0));
+        cout << sum << endl;
+    }
 }
 // Read the question again
 int main(){

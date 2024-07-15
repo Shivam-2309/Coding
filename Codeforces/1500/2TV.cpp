@@ -50,36 +50,51 @@ ll lcm(ll a, ll b)
 void solve(){
     ll n; cin >> n;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    vector<vll> v;
 
-    vll v;
     for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+        ll s, e;
+        cin >> s >> e;
+
+        v.push_back({s, e});
     }
 
-    // print(v);
+    srt(v);
 
-    ll c = 0;
+    if(v.size() <= 2){
+        cout << "YES" << endl;
+        return;
+    }
 
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
+    ll e1 = v[0][1];
+    ll e2 = v[1][1];
+
+    for(ll i=2; i<n; i++){
+        ll s = v[i][0];
+
+        if(s > max(e1, e2)){
+            if(e1 > e2){
+                e1 = v[i][1];
+            }
+            else{
+                e2 = v[i][1];
+            }
+        }
+        else if(s > min(e1, e2)){
+            if(e1 > e2){
+                e2 = v[i][1];
+            }
+            else{
+                e1 = v[i][1];
+            }
         }
         else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
+            cout << "NO" << endl;
+            return;
         }
     }
 
-    cout << c << endl;
+    cout << "YES" << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +105,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

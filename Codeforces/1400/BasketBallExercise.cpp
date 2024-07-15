@@ -50,36 +50,27 @@ ll lcm(ll a, ll b)
 void solve(){
     ll n; cin >> n;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    vll h1(n);
+    rep(i, n) cin >> h1[i];
+    vll h2(n);
+    rep(i, n) cin >> h2[i];
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+    vector<vector<ll>> grid;
+    grid.push_back(h1);
+    grid.push_back(h2);
+
+    vector<vector<ll>> dp(2, vector<ll> (n+1, -1));
+
+    dp[0][0] = h1[0];
+    dp[1][0] = h2[0];
+
+    for(ll col=1; col<n; col++){
+        dp[0][col] = max(dp[1][col-1] + grid[0][col], dp[0][col-1]);
+        dp[1][col] = max(dp[0][col-1] + grid[1][col], dp[1][col-1]);
     }
 
-    // print(v);
-
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
-        }
-    }
-
-    cout << c << endl;
+    ll ans = max(dp[0][n-1], dp[1][n-1]);
+    cout << ans << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +81,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

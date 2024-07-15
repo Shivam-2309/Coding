@@ -1,5 +1,16 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+#define ll long long
 using namespace std;
+using namespace __gnu_pbds;
+typedef tree<pair<ll, ll>, null_type, less<pair<ll, ll>>, rb_tree_tag, tree_order_statistics_node_update> indexed_set;
+typedef tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset;
+/* find_by_order(K): Returns an iterator to the Kth largest element (counting from zero) */
+/* order_of_key (K): Returns the number of items that are strictly smaller than K */
+using namespace std;
+#pragma GCC optimize("O3")
+#pragma GCC target("avx2,bmi,bmi2,popcnt,lzcnt")
 #ifndef ONLINE_JUDGE
 #define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
 #define print(v) do { \
@@ -18,93 +29,58 @@ using namespace std;
 #define rev(v) reverse(v.begin(), v.end())
 #define srt(v) sort(v.begin(), v.end());
 #define rep(i, n) for (ll i = 0; i < n; i++)
-#define MOD 1000000007
-ll lcm(ll a, ll b)
+const ll mod7 = 1e9 + 7;
+const ll mod9 = 998244353;
+ll power(ll a, ll b)
 {
-    return a * b / __gcd(a, b);
-}
-// binary modular exponentiation
-ll binpow(ll a, ll b)
-{
-    if (b == 0)
-        return 1;
-    ll res = binpow(a, b / 2);
-    if (b & 1)
-        return res * res * a;
-    else
-        return res * res;
-}
-ll binpowmod(ll a, ll b, ll m=MOD)
-{
-    a %= m;
     ll res = 1;
     while (b > 0)
     {
         if (b & 1)
-            res = res * a % m;
-        a = a * a % m;
+            res = (res * a);
+        a = (a * a);
         b >>= 1;
     }
     return res;
 }
-ll mminvprime(ll a, ll b)
-{ // gives modulo inverse of a wrt b where b is prime
-    return binpowmod(a, b - 2, b);
-}
-ll mod_add(ll a, ll b, ll m=MOD)
+ll lcm(ll a, ll b)
 {
-    a = a % m;
-    b = b % m;
-    return (((a + b) % m) + m) % m;
+    return a * b / __gcd(a, b);
 }
-ll mod_mul(ll a, ll b, ll m=MOD)
-{
-    a = a % m;
-    b = b % m;
-    return (((a * b) % m) + m) % m;
-}
-ll mod_sub(ll a, ll b, ll m=MOD)
-{
-    a = a % m;
-    b = b % m;
-    return (((a - b) % m) + m) % m;
-}
-ll mod_div(ll a, ll b, ll m=MOD)
-{
-    a = a % m;
-    b = b % m;
-    return (mod_mul(a, mminvprime(b, m), m) + m) % m;
-} // only for prime m
-// ll dp[NUM];
+// ll dp[100001];
 void solve(){
     ll n; cin >> n;
+
     vll v(n);
     rep(i, n) cin >> v[i];
 
-    ll cnt = 1;
-    ll maxi = v[0];
+    vector<ll> ans;
 
-    ll i = 1; 
-    while(i < n){
-        if(v[i] >= maxi){
-            cnt++;
-            maxi = v[i];
+    for(ll i=0; i<n; i++){
+        ll num = v[i];
+
+        if(ans.size() == 0){
+            ans.push_back(num);
+            continue;
+        }
+
+        ll idx = upper_bound(ans.begin(), ans.end(), num) - ans.begin();
+
+        if(idx == ans.size()){
+            ans.push_back(num);
         }
         else{
-            maxi = v[i];
+            ans[idx] = num;
         }
-        i++;
     }
 
-    cout << cnt << endl;
+    cout << ans.size() << endl;
 }
-// Read the question again
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // sieveOfEratosthenes()
-    // memset(dp, -1, sizeof(dp));
+    // cout.precision(15);
     ll t = 1;
     // cin >> t;
     while (t--)

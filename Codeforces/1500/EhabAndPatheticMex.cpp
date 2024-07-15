@@ -50,36 +50,94 @@ ll lcm(ll a, ll b)
 void solve(){
     ll n; cin >> n;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
-
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+    if(n == 2){
+        cout << 0 << endl;
+        return;
     }
 
-    // print(v);
+    if(n == 3){
+        cout << 0 << endl;
+        cout << 1 << endl;
+        return;
+    }
 
-    ll c = 0;
+    vector<vector<ll>> edges;
 
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
+    for(ll i=0; i<(n-1); i++){
+        ll u, v;
+        cin >> u >> v;
+
+        edges.push_back({u, v});
+    }
+
+    vector<ll> adj[n+1];
+
+    for(ll i=0; i<edges.size(); i++){
+        ll u = edges[i][0];
+        ll v = edges[i][1];
+
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    // find the index with 2 children atleast
+
+    bool f = false;
+    ll node = -1;
+
+    for(ll i=1; i<=n; i++){
+        if(adj[i].size() > 2){
+            // milgya balle balle
+
+            f = true;
+            node = i;
+            break;
         }
     }
 
-    cout << c << endl;
+    if(!f){
+        for(ll i=1; i<=(n-1); i++){
+            cout << (i-1) << endl;
+        }
+        return;
+    }
+
+    ll cnt = 0;
+
+    // if(cnt == 2) -> break;
+
+    // debug(node);
+
+    vector<ll> ans(n-1, -1);
+
+    for(ll i=0; i<edges.size(); i++){
+        ll u = edges[i][0];
+        ll v = edges[i][1];
+
+        if(u == node && cnt <= 2){
+            ans[i] = cnt;
+            cnt++;
+        }
+        if(v == node && cnt <= 2){
+            ans[i] = cnt;
+            cnt++;
+        }
+    }
+
+    // print(ans);
+
+    ll s = 3;
+
+    for(ll i=0; i<ans.size(); i++){
+        if(ans[i] == -1){
+            ans[i] = s;
+            s++;
+        }
+    }
+
+    for(auto &i : ans){
+        cout << i << endl;
+    }
 }
 // Read the question again
 int main(){
@@ -90,7 +148,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

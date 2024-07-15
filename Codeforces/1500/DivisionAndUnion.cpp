@@ -50,36 +50,62 @@ ll lcm(ll a, ll b)
 void solve(){
     ll n; cin >> n;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
-
-    vll v;
+    vector<pair<pair<ll, ll>, ll>> v;
     for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+        ll l, r;
+        cin >> l >> r;
+
+        v.push_back({{l, r}, i});
     }
 
-    // print(v);
+    auto cmp = [&](pair<pair<ll, ll>, ll> a, pair<pair<ll, ll>, ll> b) {
+        return a.first.second < b.first.second;
+    };
 
-    ll c = 0;
+    sort(v.begin(), v.end(), cmp);
 
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
+    map<ll, ll> mp;
+
+    for(ll i=0; i<n; i++){
+        mp[v[i].first.first]++;
+    }
+
+    vll ones;
+
+    // for(auto i : mp){
+    //     cout << i.first << endl;
+    // }
+
+    for(ll i=0; i<n; i++){
+        mp[v[i].first.first]--;
+
+        if(mp[v[i].first.first] == 0) mp.erase(v[i].first.first);
+
+        auto it = mp.begin();
+        if(it -> first > v[i].first.second){
+            ones.push_back(v[i].second);
+            break;
         }
         else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
+            ones.push_back(v[i].second);
         }
     }
 
-    cout << c << endl;
+    if(ones.size() == n){
+        cout << -1 << endl;
+        return;
+    }
+
+
+    set<ll> st(ones.begin(), ones.end());
+
+    for(ll i=0; i<n; i++){
+        if(st.find(i) == st.end()){
+            cout << 2 << " ";
+        }else{
+            cout << 1 << " ";
+        }
+    }cout << endl;
 }
 // Read the question again
 int main(){

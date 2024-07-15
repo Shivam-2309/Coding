@@ -48,38 +48,50 @@ ll lcm(ll a, ll b)
 }
 // ll dp[100001];
 void solve(){
-    ll n; cin >> n;
+    ll n, m, k;
+    cin >> n >> m >> k;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    vll v(n);
+    rep(i, n) cin >> v[i];
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+    vll t;
+    for(ll i=1; i<n; i++){
+        t.push_back(v[i] - v[i-1]);
     }
 
-    // print(v);
+    vll a = t;
+    srt(t);
+    map<ll, ll> mp;
+    ll i = n-2;
+    k--;
+    while(k--){
+        mp[t[i]]++;
+        i--;
+    }
 
-    ll c = 0;
+    // print(t);
 
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
+    ll l = 0;
+    ll r = 0;
+
+    ll ans = 0;
+
+    for(ll i=1; i<n; i++){
+        ll diff = v[i] - v[i-1];
+
+        if(mp.find(diff) != mp.end()){
+            ans += (v[i-1] - v[l] + 1);
+            l = i;
+            mp[diff]--;
+            if(mp[diff] == 0){
+                mp.erase(diff);
             }
-            c = abs(c);
-            i = j;
         }
     }
 
-    cout << c << endl;
+    ans += (v[n-1] - v[l] + 1);
+
+    cout << ans << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +102,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >>  t;
     while (t--)
     {
         solve();

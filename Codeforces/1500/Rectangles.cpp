@@ -47,39 +47,96 @@ ll lcm(ll a, ll b)
     return a * b / __gcd(a, b);
 }
 // ll dp[100001];
-void solve(){
-    ll n; cin >> n;
+vector<pair<ll, ll>> factorPairs(ll n) {
+    vector<pair<ll, ll>> facts;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
-
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
-    }
-
-    // print(v);
-
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
+    for (ll d = 1; d * d <= n; d++) {
+        if (n % d == 0) {
+            facts.push_back({d, n / d});
+            if (d != n / d) {
+                facts.push_back({n / d, d});
             }
-            c = abs(c);
-            i = j;
         }
     }
 
-    cout << c << endl;
+    return facts;
+}
+
+void solve(){
+    ll n, m, k; cin >> n >> m >> k;
+
+    vector<ll> rows;
+    ll cnt = 0;
+    for(ll i=0; i<n; i++){
+        ll num; cin >> num;
+
+        if(num == 1) cnt++;
+        else{
+            rows.push_back(cnt);
+            cnt = 0;
+        }
+    }
+
+    if(cnt != 0){
+        rows.push_back(cnt);
+    }
+
+    cnt = 0;
+
+    vector<ll> cols;
+    for(ll i=0; i<m; i++){
+        ll num; cin >> num;
+
+        if(num == 1) cnt++;
+        else{
+            cols.push_back(cnt);
+            cnt = 0;
+        }
+    }
+
+    if(cnt != 0){
+        cols.push_back(cnt);
+    }
+
+    vector<pair<ll, ll>> v = factorPairs(k);
+
+    set<ll> mt;
+
+    for(ll i=0; i<v.size(); i++){
+        mt.insert(v[i].first);
+        mt.insert(v[i].second);
+    }
+
+    map<ll, ll> mp1;
+
+    for(auto divs : mt){
+        for(ll i=0; i<rows.size(); i++){
+            ll len = rows[i];
+
+            if(rows[i] - divs + 1 > 0) mp1[divs] += (rows[i] - divs + 1);
+        }
+    }
+
+    map<ll, ll> mp2;
+
+    for(auto divs : mt){
+        for(ll i=0; i<cols.size(); i++){
+            ll len = cols[i];
+
+            if(cols[i] - divs + 1 > 0) mp2[divs] += (cols[i] - divs + 1);
+        }
+    }
+
+    ll ans = 0;
+
+    for(ll i=0; i<v.size(); i++){
+        ll rowNum = v[i].first;
+        ll colNum = v[i].second;
+
+        ans += mp1[rowNum] * mp2[colNum];
+    } 
+
+    cout << ans << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +147,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

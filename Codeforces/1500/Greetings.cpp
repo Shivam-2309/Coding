@@ -1,11 +1,13 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
+#define ll long long
+using namespace std;
+using namespace chrono;
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
-typedef long long ll;
-using namespace std;
-using namespace __gnu_pbds;
-typedef tree<pair<ll, ll>, null_type, less<pair<ll, ll>>, rb_tree_tag, tree_order_statistics_node_update> indexed_set;
-typedef tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset;
+ 
+typedef __gnu_pbds::tree<int, __gnu_pbds::null_type, less<int>, __gnu_pbds::rb_tree_tag, __gnu_pbds::tree_order_statistics_node_update> ordered_set;
+/* find_by_order(K): Returns an iterator to the Kth largest element (counting from zero) */
+/* order_of_key (K): Returns the number of items that are strictly smaller than K */
 #pragma GCC optimize("O3")
 #pragma GCC target("avx2,bmi,bmi2,popcnt,lzcnt")
 #ifndef ONLINE_JUDGE
@@ -50,36 +52,30 @@ ll lcm(ll a, ll b)
 void solve(){
     ll n; cin >> n;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    vector<vector<ll>> v(n, vector<ll> (2, 0));
 
-    vll v;
     for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+        ll s, e;
+        cin >> s >> e;
+
+        v[i][0] = s;
+        v[i][1] = e;
     }
 
-    // print(v);
+    sort(v.begin(), v.end());
 
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
-        }
+    ordered_set st;
+    // All the elements are unique should have given the hint of ordered set
+    for(ll i=0; i<n; i++){
+        st.insert(v[i][1]);
+    }
+    ll ans = 0;
+    for(ll i=0; i<n; i++){
+        ans += st.order_of_key(v[i][1]);
+        st.erase(v[i][1]);
     }
 
-    cout << c << endl;
+    cout << ans << endl;
 }
 // Read the question again
 int main(){

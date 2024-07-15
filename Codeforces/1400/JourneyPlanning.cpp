@@ -49,37 +49,24 @@ ll lcm(ll a, ll b)
 // ll dp[100001];
 void solve(){
     ll n; cin >> n;
+    vll v(n);
+    rep(i, n) cin >> v[i];
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    map<ll, ll> mp;
 
-    vll v;
     for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+        mp[v[i] - i] = 0;
+    }
+    
+    for(ll i=0; i<n; i++){
+        mp[v[i] - i] += v[i];
+    }
+    ll ans = -1;
+    for(auto i: mp){
+        ans = max(ans, i.second);
     }
 
-    // print(v);
-
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
-        }
-    }
-
-    cout << c << endl;
+    cout << ans << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +77,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

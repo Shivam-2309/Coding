@@ -49,37 +49,60 @@ ll lcm(ll a, ll b)
 // ll dp[100001];
 void solve(){
     ll n; cin >> n;
+    vll v(n);
+    rep(i, n) cin >> v[i];
+    string s; cin >> s;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    ll q; cin >> q;
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+    ll x = 0;
+    ll y = 0;
+
+    vll prefixXor;
+    prefixXor.push_back(v[0]);
+    for(ll i=1; i<n; i++){
+        prefixXor.push_back(prefixXor[i-1] ^ v[i]);
     }
 
-    // print(v);
+    // print(prefixXor);
 
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
+    for(ll i=0; i<n; i++){
+        if(s[i] == '0'){
+            if(x == -1) x = v[i];
+            else x = (x ^ v[i]);
         }
         else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
+            if(y == -1) y = v[i];
+            else y = (y ^ v[i]);
         }
-    }
+    } 
 
-    cout << c << endl;
+    while(q--){
+        ll tc; cin>> tc;
+
+        if(tc == 2){
+            ll w; cin >> w;
+
+            if(w == 0){
+                cout << x << " ";
+            }
+            else{
+                cout << y << " ";
+            }
+        }
+        else{
+            ll l, r;
+            cin >> l >> r;
+            l--;
+            r--;
+
+            ll num = (prefixXor[r] ^ (l >= 1 ? prefixXor[l-1] : 0 ));
+            // cout << endl;
+            // debug(num);
+            x = (x ^ num);
+            y = (y ^ num);
+        }
+    }cout << endl;
 }
 // Read the question again
 int main(){

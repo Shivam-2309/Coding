@@ -47,39 +47,58 @@ ll lcm(ll a, ll b)
     return a * b / __gcd(a, b);
 }
 // ll dp[100001];
-void solve(){
-    ll n; cin >> n;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+bool isValid(vector<ll> &workers, ll val, ll n){
+    ll extra = 0;
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
-    }
-
-    // print(v);
-
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
+    for(ll i=1; i<=n; i++){
+        if(workers[i] <= val){
+            ll t = (val - workers[i]);
+            extra += (t/2);
         }
         else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
+            extra -= (workers[i] - val);
+        }
+        // debug(extra);
+    }
+
+    return extra >= 0;
+}
+
+void solve(){
+    ll n, m;
+    cin >> n >> m;
+
+    vll v(m);
+    rep(i, m) cin >> v[i];
+
+    vector<ll> workers(n+1, 0);
+
+    for(ll i = 0; i < m; i++){
+        workers[v[i]]++;
+    }
+
+    // print(workers);
+
+    ll lo = 1;
+    ll hi = 2*m;
+
+    ll ans = -1;
+
+    while(lo <= hi){
+        ll mid = (lo + hi)/2;
+        // debug(mid);
+
+        if(isValid(workers, mid, n)){
+            ans = mid;
+            hi = mid - 1;
+        }
+        else{
+            lo = mid + 1;
         }
     }
 
-    cout << c << endl;
+    cout << ans << endl;
 }
 // Read the question again
 int main(){

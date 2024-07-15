@@ -49,37 +49,62 @@ ll lcm(ll a, ll b)
 // ll dp[100001];
 void solve(){
     ll n; cin >> n;
+    vll v(n);
+    rep(i, n) cin >> v[i];
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    /*
+    // let pos[i] -> is the number of segements such that they end at index i and had product as positve
+    // let neg[i] -> is the numbe rof segments such that they end at index i and has product as negative
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+    // As a result of this
+    // if(v[i] < 0){
+        pos[i] = neg[i-1];
+    }
+    else{
+        pos[i] = pos[i-1] + 1
     }
 
-    // print(v);
+    and for neg[i]
 
-    ll c = 0;
+    if(v[i] < 0){
+        neg[i] = pos[i-1] + 1
+    }
+    else{
+        neg[i] = neg[i-1]
+    }
+    */
 
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
+    vll pos(n, 0);
+    vll neg(n, 0);
+
+    // base case
+    if(v[0] < 0){
+        pos[0] = 0;
+        neg[0] = 1;
+    }
+    else{
+        pos[0] = 1;
+        neg[0] = 0;
+    }
+
+    for(ll i=1; i<n; i++){
+        if(v[i] < 0){
+            pos[i] = neg[i-1];
+            neg[i] = pos[i-1] + 1;
         }
         else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
+            pos[i] = pos[i-1] + 1;
+            neg[i] = neg[i-1];
         }
     }
 
-    cout << c << endl;
+    ll sumPos = 0;
+    ll sumNeg = 0;
+
+    for(ll i=0; i<n; i++) sumPos += pos[i];
+    for(ll i=0; i<n; i++) sumNeg += neg[i];
+
+    cout << sumNeg << " " << sumPos << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +115,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

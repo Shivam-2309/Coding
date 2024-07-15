@@ -47,39 +47,31 @@ ll lcm(ll a, ll b)
     return a * b / __gcd(a, b);
 }
 // ll dp[100001];
+
 void solve(){
-    ll n; cin >> n;
+    ll n, m;
+    cin >> n >> m;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    vector<vector<ll>> dp(m+1, vector<ll> (n+1, 1));
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
-    }
-
-    // print(v);
-
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
+    for(ll i=2; i<=m; i++){
+        for(ll j=1; j<=n; j++){
+            ll ans = 0;
+            for(ll k=j; k<=n; k+=j){
+                ans = (ans + dp[i-1][k])%mod7;
             }
-            c = abs(c);
-            i = j;
+            dp[i][j] = (ans%mod7 * dp[i][j]%mod7)%mod7;
         }
     }
+ 
 
-    cout << c << endl;
+    ll res = 0;
+
+    for(ll j=1; j<=n; j++){
+        res = (dp[m][j] + res)%mod7;
+    }
+
+    cout << res << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +82,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

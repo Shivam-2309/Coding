@@ -48,38 +48,47 @@ ll lcm(ll a, ll b)
 }
 // ll dp[100001];
 void solve(){
-    ll n; cin >> n;
+    string s; cin >> s;
+    string t = s;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    ll n = s.length();
 
-    vll v;
+    srt(t);
+
+    if(s == t){
+        cout << t << endl;
+        return;
+    }
+
+    map<char, ll> mp;
+    multiset<char> mt;
+
     for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+        mp[s[i]] = i;
     }
 
-    // print(v);
+    ll curr = 0;
 
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
+    for(char ch = '0'; ch <= '9'; ch++){
+        if(mp.find(ch) == mp.end()){
+            continue;
         }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
+
+        ll lastPos = mp[ch];
+
+        for(; curr <= lastPos; curr++){
+            if(s[curr] == ch || s[curr] == '9'){
+                mt.insert(s[curr]);
             }
-            c = abs(c);
-            i = j;
+            else{
+                mt.insert(s[curr] + 1);
+            }
         }
     }
 
-    cout << c << endl;
+    for(auto &x: mt) cout << x;
+    cout << endl;
+
 }
 // Read the question again
 int main(){

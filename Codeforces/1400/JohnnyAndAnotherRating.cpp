@@ -50,36 +50,17 @@ ll lcm(ll a, ll b)
 void solve(){
     ll n; cin >> n;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    ll minus = 1;
+    ll ans = n;
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+    for(ll i=1; i<64; i++){
+        ll num = n - (1ll << minus) + 1;
+        if(num < 0) break;
+        if(num > 0) ans += (num + (1ll << i) - 1)/(1ll << i);
+        minus++;
     }
 
-    // print(v);
-
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
-        }
-    }
-
-    cout << c << endl;
+    cout << ans << endl;
 }
 // Read the question again
 int main(){

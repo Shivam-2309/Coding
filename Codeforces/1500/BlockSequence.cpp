@@ -49,37 +49,68 @@ ll lcm(ll a, ll b)
 // ll dp[100001];
 void solve(){
     ll n; cin >> n;
+    vll v(n);
+    rep(i, n) cin >> v[i];
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    vector<pair<ll, ll>> a;
 
-    vll v;
     for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+        ll val = v[i];
+
+        if(i + val < n){
+            a.push_back({i, i+val});
+        }
     }
 
-    // print(v);
+    srt(a);
 
-    ll c = 0;
+    map<ll, pair<ll, ll>> mp;
+    ll i = 0;
+    for(auto &it : a){
+        mp[i] = it;
+        i++;
+    }
 
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
+    // for(auto it: mp){
+    //     cout << it.second.first << " " << it.second.second << endl;
+    // }
+
+    ll ans = 0;
+    ll sum = 0;
+    ll e= -1;
+    while(mp.size()){
+        vector<ll> b;
+        map<ll, pair<ll, ll>> mp1;
+        for(auto it: mp){
+            if(it.second.first > e){
+                sum += (it.second.second - it.second.first + 1);
+                e = it.second.second;
+                b.push_back(it.first);
             }
-            c = abs(c);
-            i = j;
         }
+
+        // print(b);
+
+        ans = max(ans, sum);
+        srt(b);
+        sum = 0;
+        e = -1;
+        ll j = 0;
+        ll k = 0;
+        for(auto &it : mp){
+            if((it.first) == b[j]){   
+                j++;         
+            }
+            else{
+                mp1[k] = it.second;
+                k++;  
+            }
+        }
+
+        mp = mp1;
     }
 
-    cout << c << endl;
+    cout << n - ans << endl;
 }
 // Read the question again
 int main(){

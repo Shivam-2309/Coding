@@ -47,39 +47,46 @@ ll lcm(ll a, ll b)
     return a * b / __gcd(a, b);
 }
 // ll dp[100001];
+
+ll dfs(ll node, vector<ll> adj[], vector<ll> &vis, ll &cnt){
+    vis[node] = 1;
+    ll size = 1;
+    for(auto child : adj[node]){
+        if(!vis[child]){
+            ll sizeofsubtree = dfs(child, adj, vis, cnt);
+            if(sizeofsubtree%2 == 0) cnt++;
+
+            size += sizeofsubtree;
+        }
+    }
+    return size;
+}
+
 void solve(){
     ll n; cin >> n;
+    vector<ll> adj[n+1];
+    
+    for(ll i=0; i<(n-1); i++){
+        ll u, v; cin >> u >> v;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
-
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+        adj[u].push_back(v);
+        adj[v].push_back(u);
     }
 
-    // print(v);
-
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
+    if(n%2 == 1){
+        cout << -1 << endl;
+        return;
+    }
+    ll cnt = 0;
+    vector<ll> vis(n+1, 0);
+    for(ll i=1; i<=n; i++){
+        if(!vis[i]){
+            // cnt++;
+            dfs(i, adj, vis, cnt);
         }
     }
 
-    cout << c << endl;
+    cout << cnt << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +97,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

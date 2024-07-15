@@ -47,39 +47,42 @@ ll lcm(ll a, ll b)
     return a * b / __gcd(a, b);
 }
 // ll dp[100001];
+
+ll f(ll i, ll num, vll &v){
+    if(i == v.size()){
+        // cout << num << endl;
+        return  __builtin_popcountll(num);
+    }
+
+    // take
+    ll take = 1e16;
+    if(num >= v[i]){
+        take = 1 + f(i+1, num - v[i], v);
+    }
+
+    ll notTake = f(i+1, num, v);
+
+    return min(take, notTake);
+}
+
 void solve(){
     ll n; cin >> n;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
-
     vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+
+    ll prev = 1;
+    for(ll i = 2; (i * prev) <= n; i++){
+        v.push_back(i * prev);
+        prev = i*prev;
     }
+
+    v.insert(v.begin(), 1);
 
     // print(v);
 
-    ll c = 0;
+    ll ans = f(0, n, v);
 
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
-        }
-    }
-
-    cout << c << endl;
+    cout << ans << endl;
 }
 // Read the question again
 int main(){

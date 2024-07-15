@@ -48,38 +48,64 @@ ll lcm(ll a, ll b)
 }
 // ll dp[100001];
 void solve(){
-    ll n; cin >> n;
+    ll n, k; cin >> n >> k;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    k = min(k, n);
 
-    vll v;
+    vll v(n);
+    rep(i, n) cin >> v[i];
+
+    ll prevWinner = -1;
+    ll currStreak = 0;
+
+    deque<ll> dq;
+
     for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+        dq.push_back(v[i]);
     }
 
-    // print(v);
+    while(true){
+        ll player1 = dq.front();
+        dq.pop_front();
 
-    ll c = 0;
+        ll player2 = dq.front();
+        dq.pop_front();
 
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
+        if(player1 > player2){
+            if(player1 == prevWinner){
+                currStreak++;
+            }
+            else{
+                currStreak = 1;
+            }
+
+            if(currStreak == k){
+                cout << player1 << endl;
+                return;
+            }
+
+            prevWinner = player1;
+            dq.push_front(player1);
+            dq.push_back(player2);
         }
         else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
+        if(player2 == prevWinner){
+                currStreak++;
             }
-            c = abs(c);
-            i = j;
+            else{
+                currStreak = 1;
+            }
+
+            if(currStreak == k){
+                cout << player2 << endl;
+                return;
+            }
+
+            prevWinner = player2;
+            dq.push_front(player2);
+            dq.push_back(player1);
         }
     }
-
-    cout << c << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +116,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

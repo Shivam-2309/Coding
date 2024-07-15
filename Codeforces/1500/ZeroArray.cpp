@@ -50,36 +50,20 @@ ll lcm(ll a, ll b)
 void solve(){
     ll n; cin >> n;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    vll v(n);
+    rep(i, n) cin >> v[i];
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+    ll sum = 0;
+    for(ll i=0; i<n; i++) sum += v[i];
+
+    ll maxi = *max_element(v.begin(), v.end());
+
+    if(sum%2 == 0 && (sum - maxi) >= maxi){
+        cout << "YES" << endl;
     }
-
-    // print(v);
-
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
-        }
+    else{
+        cout << "NO" << endl;
     }
-
-    cout << c << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +74,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

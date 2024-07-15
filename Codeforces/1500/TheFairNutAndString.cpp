@@ -48,38 +48,63 @@ ll lcm(ll a, ll b)
 }
 // ll dp[100001];
 void solve(){
-    ll n; cin >> n;
+    string s; cin >> s;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    bool found = true;
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+    ll n = s.length();
+
+    vector<ll> dp(n, 0);
+    ll cnt = 0;
+
+    if(s[0] == 'a') dp[0] = 1;
+    else dp[0] = 0;
+
+    if(s[0] == 'a'){
+        cnt++;
+        found = false;
     }
 
-    // print(v);
+    ll toAdd = 1;
 
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
+    for(ll i=1; i<n; i++){
+        if(s[i] != 'a' && s[i] != 'b'){
+            dp[i] = dp[i-1];
+            continue;
         }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
+
+        if(s[i] == 'b' && !found){
+            found = true;
+            dp[i] = dp[i-1];
+            toAdd = ((toAdd%mod7) * ((cnt + 1)%mod7))%mod7;
+            // debug(cnt);
+            continue;
+        }
+
+        if(s[i] == 'a'){
+            if(found){
+                dp[i] = toAdd;
+                cnt = 1;
+                found = false;
             }
-            c = abs(c);
-            i = j;
+            else{
+                dp[i] = dp[i-1];
+                cnt++;
+            }
         }
     }
 
-    cout << c << endl;
+    // print(dp);
+
+    ll ans = 0;
+
+    for(ll i=0; i<n; i++){
+        if(s[i] == 'a'){
+            ans = (ans%mod7 + dp[i]%mod7)%mod7;
+        }
+    }
+
+    cout << ans << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +115,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

@@ -49,37 +49,84 @@ ll lcm(ll a, ll b)
 // ll dp[100001];
 void solve(){
     ll n; cin >> n;
+    string s; cin >> s;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    ll q; cin >> q;
 
-    vll v;
+    ll plus = 0;
+    ll minus = 0;
+
     for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+        if(s[i] == '+') plus++;
+        else minus++;
     }
 
-    // print(v);
+    if(plus == minus){
+        for(ll i=0; i<q; i++){
+            cout << "YES" << endl;
+        }
+        return;
+    }
 
-    ll c = 0;
+    while(q--){
+        ll a, b;
+        cin >> a >> b;
 
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
+        if(a == b){
+            if(minus == plus){
+                cout << "YES" << endl;
+            }
+            else{
+                cout << "NO" << endl;
+            }
+            continue;
+        }
+
+        
+        ll _lcm = lcm(a, b);
+
+        // 3
+        ll need1 = _lcm/a;
+        // 5
+        ll need2 = _lcm/b;
+
+        // 2
+        ll gap = abs(plus - minus);
+        // 2
+        ll gap1 = abs(need2 - need1);
+
+        if((gap % gap1) != 0){
+            cout << "NO" << endl;
+            continue;
+        }
+
+        // debug(a);
+        // debug(b);
+
+        // 5
+        ll maxi = max(plus, minus);
+        // 3
+        ll mini = min(plus, minus);
+
+        // 1
+        ll numPairs1 = (maxi / max(need1, need2));
+        // 1
+        ll numPairs2 = (mini / min(need1, need2));
+
+        // debug(numPairs1);
+        // debug(numPairs2);
+        // debug(gap);
+
+        // 2
+        ll totalPairs = min(numPairs1, numPairs2);
+
+        if((totalPairs*gap1) >= gap){
+            cout << "YES" << endl;
         }
         else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
+            cout << "NO" << endl;
         }
     }
-
-    cout << c << endl;
 }
 // Read the question again
 int main(){
@@ -90,7 +137,7 @@ int main(){
     // memset(dp, -1, sizeof(dp));
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

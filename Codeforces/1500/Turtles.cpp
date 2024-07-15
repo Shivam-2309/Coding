@@ -50,36 +50,73 @@ ll lcm(ll a, ll b)
 void solve(){
     ll n; cin >> n;
 
-    vll a(n);
-    rep(i, n) cin >> a[i];
+    vll v(n);
+    rep(i, n) cin >> v[i];
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
+
+    vll pre(n);
+    pre[0] = v[0];
+
+    for(ll i=1; i<n; i++){
+        pre[i] = v[i] + pre[i-1];
     }
 
-    // print(v);
+    // print(pre);
 
-    ll c = 0;
+    ll q; cin >> q;
 
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
+    vll ans;
+
+    // 3 4 8 9 14 23
+
+    while(q--){
+        ll l, u; 
+        cin >> l >> u;
+
+        l--;
+        ll temp = u;
+        ll sum = (l >= 1 ? pre[l-1] : 0);
+        // debug(sum);
+        u += sum;
+        // debug(u);
+
+        ll idx = lower_bound(pre.begin(), pre.end(), u) - pre.begin();
+        
+        if(idx == n){
+            ans.push_back(n);
+            continue;
+        }
+
+        if(idx == l){
+            ans.push_back(l+1);
+            continue;
+        }
+
+        // 2 possibilty
+
+        ll idx1 = idx;
+        ll idx2 = idx-1;
+
+        ll tot1 = pre[idx1] - (l >= 1 ? pre[l-1] : 0);
+        ll poss1 = (tot1 * temp);
+        poss1 -= (tot1 * (tot1 - 1))/2;
+
+        ll tot2 = pre[idx2] - (l >= 1 ? pre[l-1] : 0);
+        ll poss2 = (tot2 * temp);
+        poss2 -= (tot2 * (tot2 - 1))/2;
+
+         if(poss2 >= poss1){
+            ans.push_back(idx2 + 1);
         }
         else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
+            ans.push_back(idx1 + 1);
         }
+
     }
 
-    cout << c << endl;
+    for(auto i : ans){
+        cout << i << " ";
+    }cout << endl;
 }
 // Read the question again
 int main(){
