@@ -1,100 +1,75 @@
-#include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-typedef long long ll;
+#include <iostream>
+#include <vector>
+#include <map>
+#include <algorithm>
+#include <climits>
+
 using namespace std;
-using namespace __gnu_pbds;
-typedef tree<pair<ll, ll>, null_type, less<pair<ll, ll>>, rb_tree_tag, tree_order_statistics_node_update> indexed_set;
-typedef tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset;
-#pragma GCC optimize("O3")
-#pragma GCC target("avx2,bmi,bmi2,popcnt,lzcnt")
-#ifndef ONLINE_JUDGE
-#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
-#define print(v) do { \
-                    cout << "vect--" << #v << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << v[i] << " "; \
-                    } \
-                    cout << "]" << endl; \
-                } while(0)
-#else
-#define debug(x)
-#define print(v)
-#endif
-#define ll long long
-#define vll vector<ll>
-#define vp vector<pair<long long, long long>>
-#define rev(v) reverse(v.begin(), v.end())
-#define srt(v) sort(v.begin(), v.end());
-#define rep(i, n) for (ll i = 0; i < n; i++)
-#define all(v) v.begin(), v.end()
-const ll mod7 = 1e9 + 7;
-const ll mod9 = 998244353;
-ll power(ll a, ll b)
-{
-    ll res = 1;
-    while (b > 0)
-    {
-        if (b & 1)
-            res = (res * a);
-        a = (a * a);
-        b >>= 1;
+
+using ll = long long;
+using vll = vector<ll>;
+#define rep(i, n) for(ll i = 0; i < (n); ++i)
+
+map<tuple<ll, ll, ll, ll>, ll> memo; 
+
+ll f(ll idx, vector<ll> &a, vector<ll> &b, ll scoreA, ll scoreB){
+    if(idx == a.size()){
+        return min(scoreA, scoreB);
     }
+
+    tuple<ll, ll, ll, ll> state = make_tuple(idx, scoreA, scoreB, memo.size());
+    if(memo.find(state) != memo.end()){
+        return memo[state];
+    }
+
+    ll r1 = a[idx];
+    ll r2 = b[idx];
+
+    ll res;
+    if(scoreA > scoreB){
+        if(r2 > 0) res = f(idx+1, a, b, scoreA, scoreB+1); 
+        else res = f(idx+1, a, b, scoreA+r1, scoreB); 
+    }
+    else if(scoreB > scoreA){
+        if(r1 > 0) res = f(idx+1, a, b, scoreA+1, scoreB); 
+        else res = f(idx+1, a, b, scoreA, scoreB+r2); 
+    }
+    else{
+        if(r1 < 0 && r2 > 0) res = f(idx+1, a, b, scoreA, scoreB+1); 
+        else if(r1 > 0 && r2 < 0) res = f(idx+1, a, b, scoreA+1, scoreB); 
+        else{
+            res = max(f(idx+1, a, b, scoreA, scoreB+r2), f(idx+1, a, b, scoreA+r1, scoreB));
+        }
+    }
+
+    memo[state] = res;
     return res;
 }
-ll lcm(ll a, ll b)
-{
-    return a * b / __gcd(a, b);
-}
-// ll dp[100001];
+
 void solve(){
     ll n; cin >> n;
 
     vll a(n);
     rep(i, n) cin >> a[i];
+    vll b(n);
+    rep(i, n) cin >> b[i];
 
-    vll v;
-    for(ll i=0; i<n; i++){
-        if(a[i] == 0) continue;
-        v.push_back(a[i]);
-    }
+    memo.clear(); // Clear memoization map before solving the new case
+    ll ans = LLONG_MIN;
+    ll scoreA = 0;
+    ll scoreB = 0;
 
-    // print(v);
+    ans = f(0, a, b, scoreA, scoreB);
 
-    ll c = 0;
-
-    for(ll i=0; i<v.size();){
-        if(c + v[i] >= 0){
-            c = c + v[i];
-            i++;
-        }
-        else{
-            ll j = i;
-            while(j < v.size() && v[j] < 0){
-                c += v[j];
-                j++;
-            }
-            c = abs(c);
-            i = j;
-        }
-    }
-
-    cout << c << endl;
+    cout << ans << endl;
 }
-// Read the question again
+
 int main(){
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-    cout.tie(0);
-    // sieveOfEratosthenes()
-    // memset(dp, -1, sizeof(dp));
-    // cout.precision(15);
-    ll t = 1;
-    cin >> t;
-    while (t--)
-    {
+    ll t; cin >> t;
+
+    while(t--){
         solve();
     }
+
     return 0;
 }
-/*     The code finishes, I hope it gets Accepted      */

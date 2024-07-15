@@ -1,11 +1,15 @@
 #include <bits/stdc++.h>
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
 typedef long long ll;
 using namespace std;
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
 typedef tree<pair<ll, ll>, null_type, less<pair<ll, ll>>, rb_tree_tag, tree_order_statistics_node_update> indexed_set;
 typedef tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset;
+/* find_by_order(K): Returns an iterator to the Kth largest element (counting from zero) */
+/* order_of_key (K): Returns the number of items that are strictly smaller than K */
+
+
 #pragma GCC optimize("O3")
 #pragma GCC target("avx2,bmi,bmi2,popcnt,lzcnt")
 #ifndef ONLINE_JUDGE
@@ -23,11 +27,9 @@ typedef tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_n
 #endif
 #define ll long long
 #define vll vector<ll>
-#define vp vector<pair<long long, long long>>
 #define rev(v) reverse(v.begin(), v.end())
 #define srt(v) sort(v.begin(), v.end());
 #define rep(i, n) for (ll i = 0; i < n; i++)
-#define all(v) v.begin(), v.end()
 const ll mod7 = 1e9 + 7;
 const ll mod9 = 998244353;
 ll power(ll a, ll b)
@@ -46,69 +48,50 @@ ll lcm(ll a, ll b)
 {
     return a * b / __gcd(a, b);
 }
-// ll dp[NUM];
-void solve(){
-    ll n;
-    cin >> n;
+// ll dp[100001];
 
-    vector<pair<pair<ll, ll>, ll>> v(n);
-    rep(i, n){
-        cin >> v[i].first.first;
-        cin >> v[i].first.second;
-        v[i].second = i;
+ll f(ll i, ll prev, ll turn, vll &v){
+    if(i == v.size()){
+        return 0;
     }
 
-    srt(v);
-    vector<pair<ll, ll>> t;
-    for(ll i=0; i<n; i++){
-        t.push_back(make_pair(v[i].first.first, v[i].first.second));
-    }
-
-    priority_queue<pair<ll, ll>, vector<pair<ll, ll>>, greater<pair<ll, ll>>> pq;
-    vector<ll> ans(n);
-    ll lastroom = 0;
-
-    for(ll i=0; i<n; i++){
-        if(pq.size() == 0){
-            lastroom++;
-            ans[i] = lastroom;
-            pq.push({t[i].second, lastroom});
+    if(turn == 0){
+        // Alice
+        if(v[i] > prev){
+            return 1 + f(i+1, v[i], !turn, v);
         }
         else{
-            ll minDeparture = pq.top().first;
-            if(minDeparture < t[i].first){
-                ll room = pq.top().second;
-                ans[i] = room;
-                pq.pop();
-                pq.push({t[i].second, room});
-            }
-            else{
-                lastroom++;
-                ans[i] = lastroom;
-                pq.push({t[i].second, lastroom});
-            }
+            return f(i+1, prev, turn, v);
         }
-
     }
-
-    vector<ll> res(n, -1);
-    for(ll i=0; i<n; i++){
-        ll idx = v[i].second;
-        res[idx] = ans[i];
+    else{
+        // Bob
+        if(v[i] > prev){
+            return f(i+1, prev, !turn, v);
+        }
+        else{
+            return f(i+1, v[i], turn, v);
+        }
     }
-    cout << *max_element(res.begin(), res.end()) << endl;
-    for(auto it : res) cout << it << " ";
-    cout << endl;
 }
-// Read the question again
+
+void solve(){
+    ll n; cin >> n;
+    vll v(n);
+    rep(i, n) cin >> v[i];
+
+    srt(v);
+
+    cout << f(0, 0, 0, v) << endl;
+    
+}
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // sieveOfEratosthenes()
-    // memset(dp, -1, sizeof(dp));
+    // cout.precision(15);
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     while (t--)
     {
         solve();

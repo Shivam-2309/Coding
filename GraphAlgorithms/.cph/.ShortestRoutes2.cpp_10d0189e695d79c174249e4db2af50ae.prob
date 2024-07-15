@@ -1,0 +1,1 @@
+{"name":"Local: ShortestRoutes2","url":"c:\\Users\\Shivam\\OneDrive\\Desktop\\Coding\\GraphAlgorithms\\ShortestRoutes2.cpp","tests":[{"id":1719390972754,"input":"2 2 1\n1 2 1\n1 2 2\n1 2","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\Shivam\\OneDrive\\Desktop\\Coding\\GraphAlgorithms\\ShortestRoutes2.cpp","group":"local","local":true}

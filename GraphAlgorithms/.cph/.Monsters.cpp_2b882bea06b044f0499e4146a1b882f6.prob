@@ -1,0 +1,1 @@
+{"name":"Local: Monsters","url":"c:\\Users\\Shivam\\OneDrive\\Desktop\\Coding\\GraphAlgorithms\\Monsters.cpp","tests":[{"id":1719351695881,"input":"4 4\n#.#M\n#.##\n#A..\n####","output":""}],"interactive":false,"memoryLimit":1024,"timeLimit":3000,"srcPath":"c:\\Users\\Shivam\\OneDrive\\Desktop\\Coding\\GraphAlgorithms\\Monsters.cpp","group":"local","local":true}

@@ -18,41 +18,77 @@ using namespace std;
 #endif
 #define ll long long
 #define vll vector<ll>
-#define rev(v) reverse(v.begin(), v.end())
-#define srt(v) sort(v.begin(), v.end());
-#define rep(i, n) for (ll i = 0; i < n; i++)
-const ll mod7 = 1e9 + 7;
-const ll mod9 = 998244353;
-ll power(ll a, ll b)
-{
-    ll res = 1;
-    while (b > 0)
-    {
-        if (b & 1)
-            res = (res * a);
-        a = (a * a);
-        b >>= 1;
+ 
+void dfs(ll node, vector<ll> adj[], vector<ll> &vis, ll parent, vector<ll> &ans, vector<ll> &par, bool &f){
+    vis[node] = 1;
+    par[node] = parent;
+ 
+    for(auto &child : adj[node]){
+        if(child == parent) continue;
+        if(!vis[child]) dfs(child, adj, vis, node, ans, par, f);
+        else if(vis[child] && child != parent && !f){
+            f = true;
+            ans.push_back(child);
+ 
+            ll currNode = node;
+            while(currNode != child && par[node] != -1){
+                ans.push_back(currNode);
+                currNode = par[currNode];
+            }
+            ans.push_back(child);
+            return;
+        }
     }
-    return res;
 }
-ll lcm(ll a, ll b)
-{
-    return a * b / __gcd(a, b);
-}
-// ll dp[100001];
+ 
 void solve(){
+    ll n, m; cin >> n >> m;
+    vector<vector<ll>> edges;
+ 
+    for(ll i=0; i<m; i++){
+        ll u, v; cin >> u >> v;
+        edges.push_back({u, v});
+    }
+ 
+    vector<ll> adj[n+1];
+    for(auto &edge : edges){
+        ll u = edge[0];
+        ll v = edge[1];
+ 
+        adj[u].push_back(v);
+        adj[v].push_back(u);
+    }
+
+    vector<ll> par(n+1, -1);
+    vector<ll> vis(n+1, 0);
+
+    for(ll i=1; i<=n; i++){
+        vector<ll> ans;
+        bool f = false;
+        if(!vis[i]){
+            dfs(i, adj, vis, -1, ans, par, f);
+        }
+
+        if(ans.size()){
+            cout << ans.size() << endl;
+            for(auto points : ans){
+                cout << points << " ";
+            }cout << endl;
+            return;
+        }
+    } 
+ 
+    cout << "IMPOSSIBLE" << endl;
 }
+
 int main(){
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
-    // cout.precision(15);
     ll t = 1;
-    cin >> t;
     while (t--)
     {
         solve();
     }
     return 0;
 }
-/*     The code finishes, I hope it gets Accepted      */

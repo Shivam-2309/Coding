@@ -11,6 +11,9 @@ typedef tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_n
 /* find_by_order(K): Returns an iterator to the Kth largest element (counting from zero) */
 /* order_of_key (K): Returns the number of items that are strictly smaller than K */
 
+const ll INF = 1e17;
+const ll NINF = INF*(-1);
+
 // Function to calculate the least common multiple (LCM)
 ll lcm(ll a, ll b) {
     return a * b / __gcd(a, b);
@@ -188,22 +191,30 @@ public:
 };
 
 // for finding the single source shortest path
+// Assumption is made that the graph must not have any negative weights or negative cycle
+// Works for both the Directed and undirected edge
 
-vector<int> dijkstra(int V, vector<vector<int>> adj[], int S) {
-    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-    vector<int> distTo(V, INT_MAX);
+// TC -> O(ElogV)
+
+vector<ll> dijkstra(ll V, vector<vector<ll>> adj[], ll S) {
+    priority_queue<pair<ll, ll>, vector<pair<ll, ll>>, greater<pair<ll, ll>>> pq;
+    vector<ll> distTo(V+1, LLONG_MAX);
 
     distTo[S] = 0;
-    pq.push({0, S});
+    pq.push({0ll, S});
+    vector<ll> vis(V+1, 0);
 
     while (!pq.empty()) {
-        int node = pq.top().second;
-        int dis = pq.top().first;
+        ll node = pq.top().second;
+        ll dis = pq.top().first;
         pq.pop();
 
-        for (auto it : adj[node]) {
-            int v = it[0];
-            int w = it[1];
+        if(vis[node]) continue;
+        vis[node] = 1;
+
+        for (auto &it : adj[node]) {
+            ll v = it[0];
+            ll w = it[1];
             if (dis + w < distTo[v]) {
                 distTo[v] = dis + w;
                 pq.push({dis + w, v});
@@ -211,6 +222,42 @@ vector<int> dijkstra(int V, vector<vector<int>> adj[], int S) {
         }
     }
     return distTo;
+}
+
+// For finding the minimum distance between any two nodes 
+// Floyd Warshal Algorithm -> O(N^3)
+// SC -> O(N^2)
+
+vector<vector<ll>> floydWarshal(ll n, vector<vector<ll>> &edges){
+    vector<vector<ll>> mat(n+1 ,vector<ll> (n+1, 1e18));
+    for(ll i=1; i<=n; i++){
+        for(ll j=1; j<=n; j++){
+            if(i == j) mat[i][j] = 0;
+        }
+    }
+
+    for(auto edge : edges){
+        ll u = edge[0];
+        ll v = edge[1];
+        ll wt = edge[2];
+
+        mat[u][v] = min(mat[u][v], wt);
+        mat[v][u] = min(mat[u][v], wt);
+    }
+
+    for(ll k=1; k<=n; k++){
+        for(ll i=1; i<=n; i++){
+            for(ll j=1; j<=n; j++){
+                mat[i][j] = min(mat[i][j], mat[i][k] + mat[k][j]);
+            }
+        }
+    }
+
+    for(ll i=1; i<=n; i++){
+        for(ll j=1; j<=n; j++){
+            if(mat[i][j] == 1e18) mat[i][j] = -1;
+        }
+    }
 }
 
 // For finding the bridges of the graph
@@ -269,6 +316,247 @@ ll getSubtrees(ll node, vector<ll> adj[], vector<ll> &vis, vector<ll> &subtree) 
     return subtree[node] = currSize;
 }
 
+// Single Source Shortest Path in the presence of negative weights and negative cycle
+// TC -> O(V*E)
+
+struct triplet{
+	int first;
+	int second;
+	int third;
+};
+
+void bellman_ford(ll n, vector<triplet> &edges, vector<ll> &dist)
+{
+	for(int i = 1; i < n; ++i)
+	{
+		for(auto e: edges)
+		{
+			int u = e.first;
+			int v = e.second;
+			int d = e.third;
+			if(dist[u] == INF) continue;
+			dist[v] = min(dist[v], d+dist[u]);
+			dist[v] = max(dist[v], NINF);
+		}
+	} // n relaxations
+ 
+	for(int i = 1; i < n; ++i)
+	{
+		for(auto e: edges)
+		{
+			int u = e.first;
+			int v = e.second;
+			int d = e.third;
+			if(dist[u] == INF) continue;
+			dist[v] = max(dist[v], NINF);
+			if(dist[u]+d < dist[v])
+			{
+				dist[v] = NINF;
+			}
+		}
+	}
+}
+
+// get the farthest node from each node in O(N) time complexity
+vector<ll> getNodeLevels(vector<vector<ll>>& adj, ll n, ll source) {
+    vector<ll> levels(n, 0);
+    queue<ll> q;
+    q.push(source);
+    vector<ll> vis(n, 0);
+    vis[source] = 1;
+    ll currLevel = 0;
+
+    while (!q.empty()) {
+        ll sz = q.size();
+        for (ll i = 0; i < sz; i++) {
+            ll node = q.front();
+            q.pop();
+
+            levels[node] = currLevel;
+
+            for (auto &child : adj[node]) {
+                if (!vis[child]) {
+                    vis[child] = 1;
+                    q.push(child);
+                }
+            }
+        }
+        currLevel++;
+    }
+
+    return levels;
+}
+
+vector<ll> findDiameter(vector<vector<ll>>& adj, ll n) {
+    vector<ll> farthestNodes = getNodeLevels(adj, n, 0);
+    ll farthestNode = -1;
+    ll maxi = *max_element(farthestNodes.begin(), farthestNodes.end());
+
+    for (ll i = 0; i < n; i++) {
+        if (farthestNodes[i] == maxi) {
+            farthestNode = i;
+            break;
+        }
+    }
+
+    vector<ll> farthestNodes1 = getNodeLevels(adj, n, farthestNode);
+    ll maxi1 = *max_element(farthestNodes1.begin(), farthestNodes1.end());
+    ll secondFarthestNode = -1;
+
+    for (ll i = 0; i < n; i++) {
+        if (farthestNodes1[i] == maxi1) {
+            secondFarthestNode = i;
+            break;
+        }
+    }
+
+    ll endOne = farthestNode;
+    ll endTwo = secondFarthestNode;
+
+    vector<ll> fromOne = getNodeLevels(adj, n, endOne);
+    vector<ll> fromTwo = getNodeLevels(adj, n, endTwo);
+
+    vector<ll> distanceOfFarthestNodeFromEachNode(n, 0);
+
+    for (ll i = 0; i < n; i++) {
+        distanceOfFarthestNodeFromEachNode[i] = max(fromOne[i], fromTwo[i]);
+    }
+
+    return distanceOfFarthestNodeFromEachNode;
+}
+
+// Code Snippet for segment trees
+#define NUM 2000000
+
+// Think about Node Structure
+// Thing about Merge Logic
+// Think about Leaf Value
+
+struct node {
+    ll val = 0;
+    node(){
+        val = 0;
+    }
+};
+
+node merge(node a, node b){
+    node ans;
+    ans.val = a.val + b.val;
+    return ans;
+}
+
+node t[4*NUM];
+
+void build(ll id, ll l, ll r, vector<ll> &nums){
+    if(l == r){
+        // leaf node
+        t[id].val = nums[l];
+        return;
+    }
+
+    ll mid = (l+r)/2;
+
+    // node array is one based indexing
+    build(2*id, l, mid, nums);
+    build(2*id+1, mid+1, r, nums);
+
+    t[id] = merge(t[2*id], t[2*id+1]);
+}
+
+void update(ll id, ll l, ll r, ll pos, ll val){
+    if(pos < l || pos > r) return;
+    if(l == r){
+        t[id].val += val;
+        return;
+    }
+
+    ll mid = (l+r)/2;
+    update(2*id, l, mid, pos, val);
+    update(2*id+1, mid+1, r, pos, val);
+
+    t[id] = merge(t[2*id], t[2*id + 1]);
+}
+
+node query(ll id, ll l, ll r, ll leftQ, ll rightQ){
+    if((leftQ>r) || (l>rightQ)){
+        return node();
+    }
+    if((leftQ<=l) && (r<=rightQ)){
+        return t[id];
+    }
+    ll mid = (l+r)/2;
+    return merge(query(2*id, l, mid, leftQ, rightQ), query(2*id+1, mid+1, r, leftQ, rightQ));
+}
+
+// This is a Trie Implementation 
+
+struct Node {
+    Node* links[26];
+    bool flag = false;
+
+    bool containsKey(char ch){
+        return links[ch - 'a'] != NULL;
+    }
+
+    void put(char ch, Node* node){
+        links[ch - 'a'] = node;
+    }
+
+    Node* get(char ch){
+        return links[ch - 'a'];
+    }
+
+    void setEnd(){
+        flag = true;
+    }
+
+    bool isEnd(){
+        return flag;
+    }
+};
+
+class Trie {
+    private:
+        Node* root;
+    public: 
+
+    Trie() {
+        root = new Node();
+    }
+
+    void insert(string word){
+        Node* node = root;
+        for(int i=0; i<word.length(); i++){
+            if(!node -> containsKey(word[i])){
+                node -> put(word[i], new Node());
+            }
+            node = node -> get(word[i]);
+        }
+        node -> setEnd();      
+    }
+
+    bool search(string word){
+        Node* node = root;
+        for(int i=0; i<word.length(); i++){
+            if(!(node -> containsKey(word[i]))){
+                return false;
+            }
+            node = node -> get(word[i]);
+        }
+        return node -> isEnd();
+    }
+
+    bool startWith(string prefix){
+        Node* node = root;
+        for(int i=0; i<prefix.length(); i++){
+            if(!(node -> containsKey(prefix[i]))){
+                return false;
+            }
+            node = node -> get(prefix[i]);
+        }
+        return true;
+    }
+};
 
 void solve() {
     cout << "THESE ARE ALL THE REQUIRED FUNCTIONS" << endl;
