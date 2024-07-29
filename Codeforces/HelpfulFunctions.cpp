@@ -1,13 +1,16 @@
 #include <bits/stdc++.h>
-using namespace std;
-
-#define ll long long
-
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
+using namespace std;
 using namespace __gnu_pbds;
-typedef tree<pair<ll, ll>, null_type, less<pair<ll, ll>>, rb_tree_tag, tree_order_statistics_node_update> indexed_set;
-typedef tree<ll, null_type, less_equal<ll>, rb_tree_tag, tree_order_statistics_node_update> indexed_multiset;
+typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;
+#define ll long long
+void myerase(ordered_set &t, int v)
+{
+    int rank = t.order_of_key(v);                     // Number of elements that are less than v in t
+    ordered_set::iterator it = t.find_by_order(rank); // Iterator that points to the (rank+1)th element in t
+    t.erase(it);
+}
 /* find_by_order(K): Returns an iterator to the Kth largest element (counting from zero) */
 /* order_of_key (K): Returns the number of items that are strictly smaller than K */
 
@@ -555,6 +558,50 @@ class Trie {
             node = node -> get(prefix[i]);
         }
         return true;
+    }
+};
+
+// Binary Lifting to find the Kth Ancestor in O(logN) time
+class TreeAncestor {
+private:
+    vector<vector<int>> up;
+    int log;
+public:
+    TreeAncestor(int n, vector<int>& parent) {
+        log = ceil(log2(1e9));
+        up.resize(n, vector<int> (log+1, -1));
+        // Binary lifting
+        // The 2^0th ancestor is the parent itself
+        for(int i=0; i<n; i++){
+            up[i][0] = parent[i];
+        }
+
+        // updating the up vector for each ancestor
+        for(int j = 1; j < log; j++){
+            for(int i = 0; i < n; i++){
+                if(up[i][j-1] != -1){
+                    up[i][j] = up[up[i][j-1]][j-1];
+                }
+                else{
+                    up[i][j] = -1;
+                }
+            }
+        }
+    }
+    
+    int getKthAncestor(int node, int k) {
+        if(k == 1) return up[node][0];
+
+		int ans = node;
+		for(int j = 0; j <= log; j++) 
+		{
+			if(k & (1 << j))
+			{
+				ans = up[ans][j];
+				if(ans==-1) break;
+			}
+		}
+		return ans;
     }
 };
 

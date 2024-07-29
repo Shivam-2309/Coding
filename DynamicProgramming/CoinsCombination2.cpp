@@ -53,23 +53,16 @@ void solve(){
     vll v(n);
     rep(i, n) cin >> v[i];
 
-    vector<ll> nextState (k+1, 0);
-    nextState[0] = 1;
-    // dp[i][sum] = dp[i+1][sum] + dp[i][sum - v[i]]
-
-    for(ll i = n-1; i >= 0; i--){
-        vector<ll> currState(k+1, 0);
-        currState[0] = 1;
-        for(ll sum = 1; sum <= k; sum++){
-            currState[sum] = 0;
-            if(i+1 < n) currState[sum] = nextState[sum]%mod7;
-            if(sum - v[i] >= 0) currState[sum] = (currState[sum]%mod7 + currState[sum - v[i]]%mod7)%mod7;
-        }
-        nextState = currState;
-    }
+    vector<vector<ll>> dp(n + 1, vector<ll> (k + 1, 0));
+    for(ll i=0; i<n; i++) dp[i][0] = 1;
     
-    cout << nextState[k] << endl;
+    for(ll i = n-1; i >= 0; i--){
+        for(ll sum = 1; sum <= k; sum++){
+            if(sum >= v[i]) dp[i][sum] = dp[i+1][sum] + dp[i][sum - v[i]];
+        }
+    }
 
+    cout << dp[0][k] << endl;
 }
 // Read the question again
 int main(){
