@@ -10,45 +10,49 @@ using namespace std;
                     for (int i = 0; i < v.size(); i++) { \
                         cout << v[i] << " "; \
                     } \
-                    cout << "]" << endl; \
+                    cout << " ]" << endl; \
+                } while(0)
+#define print2d(v) do { \
+                    cout << "vect-- starts" << endl; \
+                    for (int i = 0; i < v.size(); i++) { \
+                        cout << "[" << " "; \
+                        for (int j = 0; j < v[i].size(); j++) { \
+                            cout << v[i][j] << " "; \
+                        } \
+                        cout << "]" << endl; \
+                    } \
+                    cout << "vect-- ends" << endl; \
+                } while(0)
+#define printmap(m) do { \
+                    cout << "map-- starts" << endl; \
+                    for (auto it = m.begin(); it != m.end(); ++it) { \
+                        cout << it->first << " -> " << it->second << endl; \
+                    } \
+                    cout << "map-- ends" << endl; \
+                } while(0)
+ 
+#define printpp(v) do { \
+                    cout << "vect--" << " = [ "; \
+                    for (int i = 0; i < v.size(); i++) { \
+                        cout << "(" << v[i].first << ", " << v[i].second << ") "; \
+                    } \
+                    cout << " ]" << endl; \
                 } while(0)
 #else
 #define debug(x)
 #define print(v)
+#define print2d(v)
+#define printmap(m)
+#define printpp(v)
 #endif
+
 #define vll vector<ll>
 #define rev(v) reverse(v.begin(), v.end())
 #define srt(v) sort(v.begin(), v.end());
+#define all(v) v.begin(), v.end()
 #define rep(i, n) for (ll i = 0; i < n; i++)
 const ll mod7 = 1e9 + 7;
-const ll mod9 = 998244353;
-ll power(ll a, ll b)
-{
-    ll res = 1;
-    while (b > 0)
-    {
-        if (b & 1)
-            res = (res * a);
-        a = (a * a);
-        b >>= 1;
-    }
-    return res;
-}
-ll lcm(ll a, ll b)
-{
-    return a * b / __gcd(a, b);
-}
-// ll dp[100001];
 void solve(){
-    ll n; cin >> n;
-
-    vector<ll> dp1(14, 0);
-    dp1[1] = 1;
-    for(ll i=2; i<=14; i++){
-        dp1[i] = (10 * dp1[i-1] + (power(10, i-1) - dp1[i-1])); 
-    }
-    
-    
 }
 int main(){
     ios::sync_with_stdio(0);
@@ -63,4 +67,3 @@ int main(){
     }
     return 0;
 }
-/*     The code finishes, I hope it gets Accepted      */

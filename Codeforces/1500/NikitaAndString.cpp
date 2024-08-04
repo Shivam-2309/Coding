@@ -22,36 +22,35 @@ using namespace std;
 #define rep(i, n) for (ll i = 0; i < n; i++)
 const ll mod7 = 1e9 + 7;
 void solve(){
-    ll n, k; cin >> n >> k;
-    vll v(n);
-    rep(i, n) cin >> v[i];
-
-    ll maxi = *max_element(v.begin(), v.end());
-    ll ans = maxi;
+    string s; cin >> s;
+    ll n = s.length();
+    vll preA(n, 0);
+    vll suffA(n, 0);
+    vll preB(n, 0);
+    vll suffB(n, 0);
     for(ll i = 0; i < n; i++){
-        if(v[i] == maxi) continue;
-        ll left = maxi - v[i];
-        ll times = left / k;
-        ll val = v[i] + (times * k);
-        if(val == maxi){
-            if(times%2 == 1) {
-                cout << -1 << endl;
-                return;
-            }
-        }
-        else if(val < maxi){
-            times++;
-            val += k;
-            if(times % 2 == 0) ans = max(ans, val);
-        }
+        preA[i] = (i > 0 ? preA[i - 1] : 0) + (s[i] == 'a');
+        preB[i] = (i > 0 ? preB[i - 1] : 0) + (s[i] == 'b');
+    }
+    for(ll i = n - 1; i >= 0; i--){
+        suffA[i] = (i < n - 1 ? suffA[i + 1] : 0) + (s[i] == 'a');
+        suffB[i] = (i < n - 1 ? suffB[i + 1] : 0) + (s[i] == 'b');
     }
 
+    ll ans = 0;
     for(ll i = 0; i < n; i++){
-        ll left = ans - v[i];
-        ll temp = left / k;
-        if(temp % 2 == 1){
-            cout << -1 << endl;
-            return;
+        if(s[i] == 'a') ans++;
+    }
+
+
+    for(ll i = 0; i < n; i++){
+        for(ll j = i; j < n; j++){
+            ll cnt1 = 0;
+            if(i > 0) cnt1 += preB[i-1];
+            if(j + 1 < n) cnt1 += suffB[j+1];
+            if(i > 0) cnt1 -= preA[i-1];
+            cnt1 += preA[j];
+            ans = max(ans, n - cnt1);
         }
     }
 
@@ -63,7 +62,7 @@ int main(){
     cout.tie(0);
     // cout.precision(15);
     ll t = 1;
-    cin >> t;
+    // cin >> t;
     while (t--)
     {
         solve();

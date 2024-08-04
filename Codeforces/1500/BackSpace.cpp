@@ -22,40 +22,42 @@ using namespace std;
 #define rep(i, n) for (ll i = 0; i < n; i++)
 const ll mod7 = 1e9 + 7;
 void solve(){
-    ll n, k; cin >> n >> k;
-    vll v(n);
-    rep(i, n) cin >> v[i];
+    string s; cin >> s;
+    string t; cin >> t;
 
-    ll maxi = *max_element(v.begin(), v.end());
-    ll ans = maxi;
-    for(ll i = 0; i < n; i++){
-        if(v[i] == maxi) continue;
-        ll left = maxi - v[i];
-        ll times = left / k;
-        ll val = v[i] + (times * k);
-        if(val == maxi){
-            if(times%2 == 1) {
-                cout << -1 << endl;
-                return;
-            }
+    ll i = s.length() - 1;
+    ll j = t.length() - 1;
+    stack<char> st;
+    while(i >= 0 && j >= 0){
+        if(s[i] == t[j]){
+            i--;
+            j--;
         }
-        else if(val < maxi){
-            times++;
-            val += k;
-            if(times % 2 == 0) ans = max(ans, val);
+        else{
+            i -= 2;
         }
     }
 
-    for(ll i = 0; i < n; i++){
-        ll left = ans - v[i];
-        ll temp = left / k;
-        if(temp % 2 == 1){
-            cout << -1 << endl;
-            return;
-        }
+    // debug(i);
+    // debug(j);
+
+    // if((j < 0) && (i%2 == 0)){
+    //     cout << "NO" << endl;
+    //     return;
+    // }
+    // if((j < 0) && (i%2 == 1)){
+    //     cout << "YES" << endl;
+    //     return;
+    // }
+    if(j < 0){
+        cout << "YES" << endl;
+        return;
     }
 
-    cout << ans << endl;
+    if(i < 0){
+        cout << "NO" << endl;
+        return;
+    }
 }
 int main(){
     ios::sync_with_stdio(0);
