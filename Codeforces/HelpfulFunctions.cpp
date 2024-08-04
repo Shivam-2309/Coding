@@ -605,6 +605,32 @@ public:
     }
 };
 
+// Checks presence eof cycle in O(N)
+bool CycleCheckInUndirectedGraph(ll node, map<ll, ll> &vis, map<ll, ll> &recStack, stack<ll> &st, vector<ll> adj[], ll &len, ll par){
+    vis[node] = 1;
+    recStack[node] = 1;
+    st.push(node);
+ 
+    for(auto &child : adj[node]){
+        if(child == par) continue;
+        if(!vis[child]){
+            if(CycleCheckInUndirectedGraph(child, vis, recStack, st, adj, len, node)){
+                return true;
+            }
+        }
+        else if(recStack[child] == 1){
+            len = st.size();
+            return true;
+        }
+    }
+ 
+    recStack[node] = 0;
+    st.pop();
+ 
+    return false;
+}
+ 
+
 void solve() {
     cout << "THESE ARE ALL THE REQUIRED FUNCTIONS" << endl;
 }
