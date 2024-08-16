@@ -10,52 +10,50 @@ using namespace std;
                     for (int i = 0; i < v.size(); i++) { \
                         cout << v[i] << " "; \
                     } \
-                    cout << "]" << endl; \
+                    cout << " ]" << endl; \
+                } while(0)
+#define print2d(v) do { \
+                    cout << "vect-- starts" << endl; \
+                    for (int i = 0; i < v.size(); i++) { \
+                        cout << "[" << " "; \
+                        for (int j = 0; j < v[i].size(); j++) { \
+                            cout << v[i][j] << " "; \
+                        } \
+                        cout << "]" << endl; \
+                    } \
+                    cout << "vect-- ends" << endl; \
+                } while(0)
+#define printmap(m) do { \
+                    cout << "map-- starts" << endl; \
+                    for (auto it = m.begin(); it != m.end(); ++it) { \
+                        cout << it->first << " -> " << it->second << endl; \
+                    } \
+                    cout << "map-- ends" << endl; \
+                } while(0)
+ 
+#define printpp(v) do { \
+                    cout << "vect--" << " = [ "; \
+                    for (int i = 0; i < v.size(); i++) { \
+                        cout << "(" << v[i].first << ", " << v[i].second << ") "; \
+                    } \
+                    cout << " ]" << endl; \
                 } while(0)
 #else
 #define debug(x)
 #define print(v)
+#define print2d(v)
+#define printmap(m)
+#define printpp(v)
 #endif
+
 #define vll vector<ll>
 #define rev(v) reverse(v.begin(), v.end())
 #define srt(v) sort(v.begin(), v.end());
+#define all(v) v.begin(), v.end()
 #define rep(i, n) for (ll i = 0; i < n; i++)
 const ll mod7 = 1e9 + 7;
 void solve(){
-    ll n, k; cin >> n >> k;
-    vll v(n);
-    rep(i, n) cin >> v[i];
-
-    ll maxi = *max_element(v.begin(), v.end());
-    ll ans = maxi;
-    for(ll i = 0; i < n; i++){
-        if(v[i] == maxi) continue;
-        ll left = maxi - v[i];
-        ll times = left / k;
-        ll val = v[i] + (times * k);
-        if(val == maxi){
-            if(times%2 == 1) {
-                cout << -1 << endl;
-                return;
-            }
-        }
-        else if(val < maxi){
-            times++;
-            val += k;
-            if(times % 2 == 0) ans = max(ans, val);
-        }
-    }
-
-    for(ll i = 0; i < n; i++){
-        ll left = ans - v[i];
-        ll temp = left / k;
-        if(temp % 2 == 1){
-            cout << -1 << endl;
-            return;
-        }
-    }
-
-    cout << ans << endl;
+    cout << "HELLO SB CHANGA" << endl;
 }
 int main(){
     ios::sync_with_stdio(0);
