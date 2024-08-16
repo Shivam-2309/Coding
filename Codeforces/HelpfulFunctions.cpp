@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
+#define mod7 1000000007
 using namespace std;
 using namespace __gnu_pbds;
 typedef tree<int, null_type, less_equal<int>, rb_tree_tag, tree_order_statistics_node_update> ordered_set;
@@ -69,29 +70,40 @@ ll mod_div(ll a, ll b, ll m = 1000000007) {
     return (mod_mul(a, mminvprime(b, m), m) + m) % m;
 }
 
-// Precomputation for combinations in O(n) time
-vector<ll> fact;
-vector<ll> ifact;
+const ll MAX = 1000000;
 
-void combination(int n) {
-    fact.resize(n + 1);
-    ifact.resize(n + 1);
-    fact[0] = 1;
-    for (int i = 1; i <= n; i++) {
-        fact[i] = mod_mul(fact[i - 1], i, 1000000007);
+vector<ll> fact(MAX + 1), inv_fact(MAX + 1);
+
+ll mod_pow(ll a, ll b, ll mod) {
+    ll result = 1;
+    while (b > 0) {
+        if (b % 2 == 1) {
+            result = (result * a) % mod;
+        }
+        a = (a * a) % mod;
+        b /= 2;
     }
-    ifact[n] = mminvprime(fact[n], 1000000007);
-    for (int i = n - 1; i >= 0; i--) {
-        ifact[i] = mod_mul(ifact[i + 1], i + 1, 1000000007);
+    return result;
+}
+
+void precompute_factorials() {
+    fact[0] = fact[1] = 1;
+    for (ll i = 2; i <= MAX; i++) {
+        fact[i] = fact[i - 1] * i % mod7;
+    }
+    inv_fact[MAX] = mod_pow(fact[MAX], mod7 - 2, mod7);
+    for (ll i = MAX - 1; i >= 0; i--) {
+        inv_fact[i] = inv_fact[i + 1] * (i + 1) % mod7;
     }
 }
 
-ll ncr1(ll n, ll r, ll m = 1000000007) {
-    return mod_mul(fact[n], mod_mul(ifact[r], ifact[n - r], m), m);
+ll mod_nCr(ll n, ll r) {
+    if (r > n) return 0;
+    return fact[n] * inv_fact[r] % mod7 * inv_fact[n - r] % mod7;
 }
 
 // For individual nCr in O(r) time
-int ncr2(int n, int r) {
+int nCr(int n, int r) {
     long long p = 1, k = 1;
     if (n - r < r) r = n - r;
     if (r != 0) {

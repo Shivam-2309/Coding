@@ -1,69 +1,78 @@
 #include <bits/stdc++.h>
-typedef long long ll;
 using namespace std;
-#pragma GCC optimize("O3")
-#pragma GCC target("avx2,bmi,bmi2,popcnt,lzcnt")
-#ifndef ONLINE_JUDGE
-#define debug(x) cout<<"errr----  "<< #x <<" " <<x<<endl 
-#define print(v) do { \
-                    cout << "vect--" << #v << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << v[i] << " "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#define print2d(v) do { \
-                    cout << "vect-- starts" << endl; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "[" << " "; \
-                        for (int j = 0; j < v[i].size(); j++) { \
-                            cout << v[i][j] << " "; \
-                        } \
-                        cout << "]" << endl; \
-                    } \
-                    cout << "vect-- ends" << endl; \
-                } while(0)
-#define printmap(m) do { \
-                    cout << "map-- starts" << endl; \
-                    for (auto it = m.begin(); it != m.end(); ++it) { \
-                        cout << it->first << " -> " << it->second << endl; \
-                    } \
-                    cout << "map-- ends" << endl; \
-                } while(0)
- 
-#define printpp(v) do { \
-                    cout << "vect--" << " = [ "; \
-                    for (int i = 0; i < v.size(); i++) { \
-                        cout << "(" << v[i].first << ", " << v[i].second << ") "; \
-                    } \
-                    cout << " ]" << endl; \
-                } while(0)
-#else
-#define debug(x)
-#define print(v)
-#define print2d(v)
-#define printmap(m)
-#define printpp(v)
-#endif
-
+#define ll long long
 #define vll vector<ll>
+#define rep(i, n) for(ll i = 0; i < (n); i++)
+#define srt(v) sort(v.begin(), v.end())
 #define rev(v) reverse(v.begin(), v.end())
-#define srt(v) sort(v.begin(), v.end());
-#define all(v) v.begin(), v.end()
-#define rep(i, n) for (ll i = 0; i < n; i++)
-const ll mod7 = 1e9 + 7;
-void solve(){
-    cout << "HELLO SB CHANGA" << endl;
+
+void solve() {
+    ll rows, cols, k;
+    cin >> rows >> cols >> k;
+
+    ll n; cin >> n;
+    vll a(n);
+    rep(i, n) cin >> a[i];
+
+    vector<vector<ll>> grid(rows, vector<ll>(cols, 0));
+
+    for(ll i = 0; i < rows; i++){
+        for(ll j = 0; j < cols; j++){
+            ll r_count = 0;
+            ll c_count = 0;
+
+            ll left_bound = j - k + 1;
+            ll right_bound = j + k - 1;
+
+            left_bound = max(left_bound, 0ll);
+            right_bound = min(cols - 1, right_bound);
+            ll space_between = right_bound - left_bound + 1;
+            c_count = space_between - k + 1;
+
+            ll left_b = i - k + 1;
+            ll right_b = i + k - 1;
+
+            left_b = max(left_b, 0ll);
+            right_b = min(rows - 1, right_b);
+            space_between = right_b - left_b + 1;
+            r_count = space_between - k + 1;
+
+
+            grid[i][j] = (c_count * r_count);
+        }
+    }
+
+    // for(ll i = 0; i < rows; i++){
+    //     for(ll j = 0; j < cols; j++){
+    //         cout << grid[i][j] << " ";
+    //     }cout << endl;
+    // }
+
+    vector<ll> v;
+    ll ans = 0;
+    for(ll i = 0; i < rows; i++){
+        for(ll j = 0; j < cols; j++){
+            v.push_back(grid[i][j]);
+        }
+    }
+
+    sort(v.rbegin(), v.rend());
+    sort(a.rbegin(), a.rend());
+
+    for(int i = 0; i < a.size(); i++){
+        ans += (a[i] * v[i]);
+    }
+
+    cout << ans << endl;
 }
-int main(){
+
+int main() {
     ios::sync_with_stdio(0);
     cin.tie(0);
     cout.tie(0);
     // cout.precision(15);
-    ll t = 1;
-    cin >> t;
-    while (t--)
-    {
+    ll t; cin >> t;
+    while(t--){
         solve();
     }
     return 0;
