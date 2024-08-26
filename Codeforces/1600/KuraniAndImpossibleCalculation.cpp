@@ -1,4 +1,3 @@
-// Author : Shivam Kapoor
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
@@ -18,41 +17,31 @@ typedef long long ll;
 
 const ll mod7 = 1e9 + 7;
 
-void solve(){
-    ll n; cin >> n;
-
-    if(n % 2 == 0){
-        cout << -1 << endl;
+void solve() {
+    ll n, m; 
+    cin >> n >> m;
+    vll v(n);
+    rep(i, n) cin >> v[i];
+    if (n > m) {
+        cout << 0 << endl;
         return;
     }
-    else{
-        ll curr = 1;
-        ll times = n / 2;
-        vector<ll> ans1;
-        for(ll i = 0; i < times; i++){
-            ans1.push_back(curr);
-            curr += 2;
-        }
-        ans1.push_back(n);
-        curr = n - 1;
-        while(curr > 0){
-            ans1.push_back(curr);
-            curr -= 2;
-        }
 
-        for(ll i = 0; i < n; i++){
-            cout << ans1[i] << " ";
-        }cout << endl;
+    ll ans = 1;
+    vector<ll> a;
+    for (ll i = 0; i < n; i++) {
+        for (ll j = i + 1; j < n; j++) {
+            ans = (ans * (abs(v[i] - v[j]) % m)) % m;
+        }
     }
+
+    cout << ans << endl;
 }
 
 int main(){
     fast_io
     ll t = 1;
-    cin >> t;
-    debug(t);
-    while (t--) {
-        solve();
-    }
+    // cin >> t;
+    while (t--) solve();
     return 0;
 }
