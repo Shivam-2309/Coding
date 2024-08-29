@@ -19,28 +19,50 @@ typedef long long ll;
 const ll mod7 = 1e9 + 7;
 
 void solve(){
-    ll n, x; cin >> n >> x;
-    vll v(n);
-    rep(i, n) cin >> v[i];
-    vll p = v;
-    ll cnt = 0;
-    for(ll i = 1; i < n; i++) p[i] += p[i - 1];
-    vector<ll> dp(n, 0);
-    // print(p);
-    
-    for(ll i = n - 1; i >= 0; i--){
-        ll left = (i > 0 ? p[i - 1] + x : x);
-        ll idx = upper_bound(p.begin(), p.end(), left) - p.begin();
-        // debug(i);
-        // debug(idx);
-        dp[i] += max(0ll, idx - i);
-        if(idx + 1 < n) dp[i] += dp[idx + 1];
-        // debug(dp[i]);
-        // cout << "NEXT" << endl;
+    ll n; cin >> n;
+    vll v(n + 1);
+    for(ll i = 1; i <= n; i++) cin >> v[i];
+
+    vector<ll> indegree(n + 1, 0);
+    for(ll i = 0; i < n - 1; i++){
+        ll u, v;
+        cin >> u >> v;
+
+        indegree[u]++;
+        indegree[v]++;
     }
 
-    rep(i, n) cnt += dp[i];
-    cout << cnt << endl;
+    vector<pair<ll, ll>> a;
+    for(ll i = 1; i <= n; i++){
+        a.push_back({v[i], indegree[i]});
+    }
+
+    // print(indegree);
+
+    vector<ll> ans;
+    priority_queue<pair<ll ,ll>> pq;
+    for(auto &it : a){
+        if(it.second > 1) pq.push(it);
+    }
+    ll currAns = 0;
+    for(auto &it : v) currAns += it;
+    ans.push_back(currAns);
+    for(ll i = 2; i < n; i++){
+        ll t = pq.top().first;
+        ll times = pq.top().second;
+        pq.pop();
+
+        times--;
+        currAns += t;
+        ans.push_back(currAns);
+        if(times != 1) pq.push({t, times});
+        if(pq.size() == 0) break;
+    }
+
+    while(ans.size() < n - 1) ans.push_back(ans.back());
+
+    for(auto &it : ans) cout << it << " ";
+    cout << endl;
 }
 
 int main(){

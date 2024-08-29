@@ -18,41 +18,37 @@ typedef long long ll;
 
 const ll mod7 = 1e9 + 7;
 
-void solve(){
-    ll n; cin >> n;
+void solve() {
+    string s; 
+    cin >> s;
+    ll n = s.length();
 
-    if(n % 2 == 0){
-        cout << -1 << endl;
-        return;
-    }
-    else{
-        ll curr = 1;
-        ll times = n / 2;
-        vector<ll> ans1;
-        for(ll i = 0; i < times; i++){
-            ans1.push_back(curr);
-            curr += 2;
-        }
-        ans1.push_back(n);
-        curr = n - 1;
-        while(curr > 0){
-            ans1.push_back(curr);
-            curr -= 2;
-        }
+    for(ll i = 1; i <= n; i++) {
+        string t_copy = s.substr(0, i);  
+        string t = s.substr(0, i);
+        string str = t_copy;
+        // print(t);
+        while(!str.empty() && t_copy.back() == str.front()) {
+            t_copy.pop_back();
+            str.erase(str.begin());
 
-        for(ll i = 0; i < n; i++){
-            cout << ans1[i] << " ";
-        }cout << endl;
+            string tt = t_copy + str;
+            if (s.find(tt) == string::npos) {
+                cout << "YES" << endl;
+                cout << t << endl;
+                return;
+            }
+        }
     }
+
+    cout << "NO" << endl;
 }
 
-int main(){
+
+int main() {
     fast_io
     ll t = 1;
-    cin >> t;
-    debug(t);
-    while (t--) {
-        solve();
-    }
+    // cin >> t;
+    while (t--) solve();
     return 0;
 }

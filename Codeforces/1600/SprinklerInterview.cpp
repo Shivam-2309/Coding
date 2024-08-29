@@ -19,28 +19,8 @@ typedef long long ll;
 const ll mod7 = 1e9 + 7;
 
 void solve(){
-    ll n, x; cin >> n >> x;
-    vll v(n);
-    rep(i, n) cin >> v[i];
-    vll p = v;
-    ll cnt = 0;
-    for(ll i = 1; i < n; i++) p[i] += p[i - 1];
-    vector<ll> dp(n, 0);
-    // print(p);
-    
-    for(ll i = n - 1; i >= 0; i--){
-        ll left = (i > 0 ? p[i - 1] + x : x);
-        ll idx = upper_bound(p.begin(), p.end(), left) - p.begin();
-        // debug(i);
-        // debug(idx);
-        dp[i] += max(0ll, idx - i);
-        if(idx + 1 < n) dp[i] += dp[idx + 1];
-        // debug(dp[i]);
-        // cout << "NEXT" << endl;
-    }
-
-    rep(i, n) cnt += dp[i];
-    cout << cnt << endl;
+    vector<vector<ll>> edges;
+    fo
 }
 
 int main(){

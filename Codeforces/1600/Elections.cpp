@@ -19,28 +19,41 @@ typedef long long ll;
 const ll mod7 = 1e9 + 7;
 
 void solve(){
-    ll n, x; cin >> n >> x;
+    ll n, k; cin >> n >> k;
     vll v(n);
     rep(i, n) cin >> v[i];
-    vll p = v;
-    ll cnt = 0;
-    for(ll i = 1; i < n; i++) p[i] += p[i - 1];
-    vector<ll> dp(n, 0);
-    // print(p);
-    
-    for(ll i = n - 1; i >= 0; i--){
-        ll left = (i > 0 ? p[i - 1] + x : x);
-        ll idx = upper_bound(p.begin(), p.end(), left) - p.begin();
-        // debug(i);
-        // debug(idx);
-        dp[i] += max(0ll, idx - i);
-        if(idx + 1 < n) dp[i] += dp[idx + 1];
-        // debug(dp[i]);
-        // cout << "NEXT" << endl;
+
+    ll num_max_elements = 0;
+    v[0] += k;
+    ll maxi = *max_element(all(v));
+    for(ll i = 0; i < n; i++){
+        if(v[i] == maxi) num_max_elements++;
     }
 
-    rep(i, n) cnt += dp[i];
-    cout << cnt << endl;
+    vll pos;
+    for(ll i = 0; i < n; i++){
+        if(v[i] == maxi) pos.push_back(i);
+    }
+
+    vll ans;
+    vll pre = v;
+    for(ll i = 1; i < n; i++) pre[i] += pre[i - 1];
+    for(ll i = 0; i < n; i++){
+        if(v[i] == maxi){
+            if(pos[0] == i) ans.push_back(0);
+            else ans.push_back(i); 
+        }
+        else{
+            if(pre[i] >= maxi){
+                ans.push_back(i);
+            }
+            else{
+                ans.push_back(i + 1);
+            }
+        }
+    }
+    for(auto it : ans) cout << it << " ";
+    cout << endl;
 }
 
 int main(){

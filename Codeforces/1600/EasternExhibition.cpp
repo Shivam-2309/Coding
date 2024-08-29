@@ -19,28 +19,35 @@ typedef long long ll;
 const ll mod7 = 1e9 + 7;
 
 void solve(){
-    ll n, x; cin >> n >> x;
-    vll v(n);
-    rep(i, n) cin >> v[i];
-    vll p = v;
-    ll cnt = 0;
-    for(ll i = 1; i < n; i++) p[i] += p[i - 1];
-    vector<ll> dp(n, 0);
-    // print(p);
-    
-    for(ll i = n - 1; i >= 0; i--){
-        ll left = (i > 0 ? p[i - 1] + x : x);
-        ll idx = upper_bound(p.begin(), p.end(), left) - p.begin();
-        // debug(i);
-        // debug(idx);
-        dp[i] += max(0ll, idx - i);
-        if(idx + 1 < n) dp[i] += dp[idx + 1];
-        // debug(dp[i]);
-        // cout << "NEXT" << endl;
+    ll n; cin >> n;
+    vector<pair<ll, ll>> v;
+    for(ll i = 0; i < n; i++){
+        ll u, b; cin >> u >> b;
+        v.push_back({u, b});
     }
 
-    rep(i, n) cnt += dp[i];
-    cout << cnt << endl;
+    // set<pair<int, int>> st(all(v));
+    if(v.size() % 2 == 1) {
+        cout << 1 << endl;
+        return;
+    }
+    // v.clear();
+    // for(auto it : st) v.push_back(it);
+
+    vll X;
+    vll Y;
+    for(ll i = 0; i < n; i++){
+        X.push_back(v[i].first);
+        Y.push_back(v[i].second);
+    }
+    n = v.size();
+    srt(X);
+    srt(Y);
+
+    ll a = (X[n/2] - X[n/2 - 1] + 1);
+    ll b = (Y[n/2] - Y[n/2 - 1] + 1);
+
+    cout << a * b << endl;
 }
 
 int main(){
