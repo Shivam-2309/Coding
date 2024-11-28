@@ -19,32 +19,54 @@ typedef long long ll;
 const ll mod7 = 1e9 + 7;
 const ll mod9 = 998244353;
 
-void solve() {
-    ll n;
-    cin >> n;
-    n++; 
-    cout << "THE REQUIRED PATTERN -> " << endl;
-    for (ll i = 0; i < n - 1; i++) {
-        for (ll j = 0; j < n - i - 2; j++) {
-            cout << ' ';
+ll rangeBitwiseAnd(ll left, ll right) {
+    if(left == right) return left;
+    for(ll i = 63; i >= 0; i--){
+        if(((left & (1LL << i)) == 0) && (right & (1LL << i))){
+            right = right & (~((1LL << (i + 1)) - 1));
+            return right;
         }
-        for (ll j = 1; j <= i + 1; j++) {
-            cout << char(j + 'a' - 1);
-        }
-        ll s = i;
-        for (ll j = 0; j < i; j++) {
-            cout << char(s + 'a' - 1);
-            s--;
-        }
-        cout << endl;
     }
+    return right;
+}
+
+void solve() {
+    ll n, x;
+    cin >> n >> x;
+
+    // debug(n);
+    // debug(x);
+
+    ll lo = n;
+    ll hi = (1LL << 61);
+    ll ans = (1LL << 61);
+
+    // debug(lo);
+    // debug(hi);
+
+    while(lo <= hi){
+        // cout << "CHECK" << endl;
+        ll mid = ((lo + hi) / 2);
+        ll midAns = rangeBitwiseAnd(n, mid);
+        // debug(midAns);
+        if(midAns <= x){
+            hi = mid - 1;
+        }
+        else{
+            lo = mid + 1;
+        }
+        if(midAns == x) ans = min(ans, mid);
+    }
+
+    if(ans != (1LL << 61)) cout << ans << endl;
+    else cout << -1 << endl;
 }
 
 
 int main(){
     fast_io
     ll t = 1;
-    // cin >> t;
+    cin >> t;
     while (t--) solve();
     return 0;
 }

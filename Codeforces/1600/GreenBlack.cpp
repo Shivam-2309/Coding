@@ -19,27 +19,46 @@ typedef long long ll;
 const ll mod7 = 1e9 + 7;
 const ll mod9 = 998244353;
 
-void solve() {
-    ll n;
-    cin >> n;
-    n++; 
-    cout << "THE REQUIRED PATTERN -> " << endl;
-    for (ll i = 0; i < n - 1; i++) {
-        for (ll j = 0; j < n - i - 2; j++) {
-            cout << ' ';
-        }
-        for (ll j = 1; j <= i + 1; j++) {
-            cout << char(j + 'a' - 1);
-        }
-        ll s = i;
-        for (ll j = 0; j < i; j++) {
-            cout << char(s + 'a' - 1);
-            s--;
-        }
-        cout << endl;
-    }
-}
+void solve(){
+    ll n, k, a, b; cin >> n >> k >> a >> b;
+    if(b > a) swap(a, b);
 
+    vll v;
+    ll a_copy = a;
+    ll b_copy = b;
+    for(ll i = 0; i < min(k, a_copy); i++){
+        v.push_back(0);
+        a--;
+    }
+    ll used = 0;
+    while(a > 0){
+        v.push_back(1);
+        b--;
+        used++;
+        ll k_copy = k;
+        while(a > 0 && k_copy > 0){
+            a--;
+            k_copy--;
+            v.push_back(0);
+        }
+        if(b == 0) break;
+    }
+
+    if(b == 0){
+        if(a > k){
+            cout << "NO" << endl;
+            return;
+        }
+    }
+
+    ll left = b_copy - used;
+    if(left > 2*(k - 1)){
+        cout << "NO" << endl;
+        return;
+    }
+
+    print(v);
+}
 
 int main(){
     fast_io
